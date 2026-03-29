@@ -1370,6 +1370,16 @@ a {
 }
 
 /* ── Simulation Form Layout ───────────────────────── */
+.simulate-controls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.simulate-controls-header {
+  padding-bottom: 0.25rem;
+}
+
 .simulate-form-v2 {
   display: flex;
   flex-direction: column;
@@ -1384,9 +1394,18 @@ a {
 
 .form-actions-v2 {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 12px;
   margin-top: 12px;
+}
+
+/* Simulate modal actions: explicit size so height isn’t lost to cascade / Tailwind order. */
+.simulate-action-btn {
+  min-height: 4rem;
+  padding: 1.25rem 1rem;
+  box-sizing: border-box;
 }
 
 .form-select-v2 {

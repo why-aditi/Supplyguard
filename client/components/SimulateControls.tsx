@@ -74,14 +74,11 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
   }
 
   return (
-    <div className="simulate-controls-container flex flex-col">
-      <div className="mb-8">
-        <h2 className="font-tech text-2xl text-amber-500 mb-4 flex items-center gap-4">
+    <div className="simulate-controls-container">
+      <div className="simulate-controls-header shrink-0">
+        <h2 className="font-tech text-2xl text-amber-500 flex items-center gap-4">
           <span className="text-3xl">🎮</span> SIMULATION CONTROL
         </h2>
-        <p className="font-tech text-[11px] text-muted leading-relaxed opacity-80 uppercase tracking-widest">
-          Trigger network disruptions to analyze risk propagation and rerouting efficacy.
-        </p>
       </div>
 
       <div className="simulate-form-v2">
@@ -177,7 +174,8 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
 
         <div className="form-actions-v2 mt-4">
           <button
-            className={`font-tech w-full py-4 px-6 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-3 ${
+            type="button"
+            className={`font-tech flex-1 min-w-0 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 simulate-action-btn ${
               !selectedNode || loading || odIncomplete
                 ? 'bg-white/5 text-muted cursor-not-allowed border border-white/5'
                 : 'bg-amber-600 hover:bg-amber-500 text-white shadow-lg shadow-amber-900/40 active:scale-95 border border-amber-500/30'
@@ -187,9 +185,9 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
           >
             {loading ? '⏳ PROCESSING...' : '💥 EXECUTE DISRUPTION'}
           </button>
-          
           <button
-            className="font-tech w-full py-4 px-6 rounded-lg text-xs font-bold border border-white/10 bg-white/5 hover:bg-white/10 text-white transition-all active:scale-95"
+            type="button"
+            className="font-tech flex-1 min-w-0 rounded-lg text-xs font-bold border border-white/10 bg-white/5 hover:bg-white/10 text-white transition-all active:scale-95 simulate-action-btn"
             onClick={handleReset}
             disabled={loading}
           >

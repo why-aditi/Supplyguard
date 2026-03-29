@@ -460,6 +460,25 @@ function computeOdAlternateRoutes(originId, destId) {
   return { routes: out.slice(0, 15), unreachable: false, shortestLen: L };
 }
 
+/**
+ * Whether affectedNodeId lies on some shortest hop path from origin to dest.
+ * Returns { known: false } if dest unreachable from origin.
+ */
+function isDisruptedNodeOnOdShortestPath(originId, destId, affectedNodeId) {
+  const distFrom = bfsHopDistancesFrom(originId);
+  const distToDest = bfsHopDistancesToDest(destId);
+  if (!distFrom.has(destId)) {
+    return { known: false, affects: null };
+  }
+  const L = distFrom.get(destId);
+  const df = distFrom.get(affectedNodeId);
+  const dt = distToDest.get(affectedNodeId);
+  if (df === undefined || dt === undefined) {
+    return { known: true, affects: false };
+  }
+  return { known: true, affects: df + dt === L };
+}
+
 // ── LLM Recommendation Engine ───────────────────────
 async function getRecommendations(disruption, propagation) {
   const affectedNodes = Object.entries(propagation)
@@ -473,6 +492,7 @@ async function getRecommendations(disruption, propagation) {
 
   let alternateRoutes;
   let odContext = null;
+  let legacyContext = null;
 
   if (disruption.origin_node_id && disruption.dest_node_id) {
     const od = computeOdAlternateRoutes(
@@ -492,11 +512,36 @@ async function getRecommendations(disruption, propagation) {
       unreachable: od.unreachable,
       shortestLen: od.shortestLen,
     };
+    if (!od.unreachable) {
+      const pathImpact = isDisruptedNodeOnOdShortestPath(
+        disruption.origin_node_id,
+        disruption.dest_node_id,
+        disruption.affected_node_id
+      );
+      odContext.routeImpactKnown = pathImpact.known;
+      odContext.disruptionAffectsOdPath = pathImpact.affects;
+    } else {
+      odContext.routeImpactKnown = false;
+    }
   } else {
     alternateRoutes = computeLegacyAlternateRoutes(propagation);
+    const endpointSet = new Set();
+    for (const ar of alternateRoutes) {
+      if (ar.source_node_id) endpointSet.add(ar.source_node_id);
+      if (ar.target_node_id) endpointSet.add(ar.target_node_id);
+    }
+    legacyContext = {
+      disruptionTouchesAlternateEndpoints: endpointSet.has(disruption.affected_node_id),
+    };
   }
 
-  const prompt = buildPrompt(disruption, affectedNodes, alternateRoutes, odContext);
+  const prompt = buildPrompt(
+    disruption,
+    affectedNodes,
+    alternateRoutes,
+    odContext,
+    legacyContext
+  );
 
   // Try Gemini first, then Grok
   let result;
@@ -513,7 +558,7 @@ async function getRecommendations(disruption, propagation) {
       console.log('✅ Groq fallback successful');
     } catch (groqErr) {
       console.warn('❌ Groq also failed:', groqErr.message);
-      // Return graph-computed fallback
+      const fbReason = fallbackRecommendationReasoning(odContext, legacyContext);
       return {
         disruption_id: disruption.id,
         llm_source: 'fallback',
@@ -522,11 +567,29 @@ async function getRecommendations(disruption, propagation) {
           route: `${r.from} → ${r.to} (${r.mode})`,
           source_node_id: r.source_node_id,
           target_node_id: r.target_node_id,
-          reasoning: 'Graph-computed alternate route (LLM unavailable)',
-          cost_delta_percent: Math.round(Math.random() * 30 + 5),
-          lead_time_delta_days: r.lead_time_days,
+          reasoning: fbReason,
+          cost_delta_percent:
+            odContext &&
+            !odContext.unreachable &&
+            odContext.routeImpactKnown &&
+            odContext.disruptionAffectsOdPath === false
+              ? Math.round(Math.random() * 3)
+              : Math.round(Math.random() * 30 + 5),
+          lead_time_delta_days:
+            odContext &&
+            !odContext.unreachable &&
+            odContext.routeImpactKnown &&
+            odContext.disruptionAffectsOdPath === false
+              ? Math.round(Math.random() * 2)
+              : r.lead_time_days,
           risk_reduction_percent: Math.round(Math.random() * 40 + 20),
-          confidence: 'medium',
+          confidence:
+            odContext &&
+            !odContext.unreachable &&
+            odContext.routeImpactKnown &&
+            odContext.disruptionAffectsOdPath === false
+              ? 'high'
+              : 'medium',
         })),
       };
     }
@@ -557,7 +620,22 @@ async function getRecommendations(disruption, propagation) {
   }
 }
 
-function buildPrompt(disruption, affectedNodes, alternateRoutes, odContext) {
+function fallbackRecommendationReasoning(odContext, legacyContext) {
+  if (
+    odContext &&
+    !odContext.unreachable &&
+    odContext.routeImpactKnown &&
+    odContext.disruptionAffectsOdPath === false
+  ) {
+    return 'This disruption does not lie on a shortest-path leg between the specified origin and destination; no reroute is required for this modeled shipment. (Graph fallback — LLM unavailable)';
+  }
+  if (legacyContext && !legacyContext.disruptionTouchesAlternateEndpoints) {
+    return 'The disrupted node is not an endpoint of the listed alternate edges; those legs are not directly tied to this disruption location. (Graph fallback — LLM unavailable)';
+  }
+  return 'Graph-computed alternate route (LLM unavailable)';
+}
+
+function buildPrompt(disruption, affectedNodes, alternateRoutes, odContext, legacyContext) {
   const shipmentBlock = odContext
     ? odContext.unreachable
       ? `SHIPMENT LEG: origin = ${odContext.originName} → destination = ${odContext.destName}
@@ -570,16 +648,58 @@ The listed routes are edges on shortest path(s) between origin and destination (
 `
     : '';
 
+  let routeImpactBlock = '';
+  if (odContext && !odContext.unreachable && odContext.routeImpactKnown) {
+    if (odContext.disruptionAffectsOdPath) {
+      routeImpactBlock = `ROUTE IMPACT (graph): The disrupted node lies on at least one shortest hop path between this shipment origin and destination.
+
+`;
+    } else {
+      routeImpactBlock = `ROUTE IMPACT (graph): The disrupted node does NOT lie on any shortest hop path between origin and destination. This modeled shipment leg is not intersected by the disruption location.
+
+`;
+    }
+  } else if (legacyContext) {
+    if (legacyContext.disruptionTouchesAlternateEndpoints) {
+      routeImpactBlock = `ROUTE IMPACT (heuristic, no shipment OD specified): The disrupted node appears as a source or target on at least one listed alternate edge; it may be relevant to those legs.
+
+`;
+    } else {
+      routeImpactBlock = `ROUTE IMPACT (heuristic, no shipment OD specified): The disrupted node is NOT an endpoint of any listed alternate edge. Say clearly that those alternates are not directly tied to this disruption location.
+
+`;
+    }
+  }
+
+  let criticalInstructions = '';
+  if (
+    odContext &&
+    !odContext.unreachable &&
+    odContext.routeImpactKnown &&
+    odContext.disruptionAffectsOdPath === false
+  ) {
+    criticalInstructions = `
+CRITICAL INSTRUCTIONS: ROUTE IMPACT shows this disruption does NOT intersect the OD shortest-path leg. Do NOT recommend speculative reroutes as if that leg were blocked. For all three recommendations, state in "reasoning" that the modeled disruption does not affect this shipment route. Use near-zero cost_delta_percent (0–5) and lead_time_delta_days (0–2) unless you justify a small buffer; confidence may be "high" for that assessment. Ranks 2–3 may add minor monitoring or contingency notes only if clearly secondary and not contradicting "no reroute needed."
+
+`;
+  } else if (legacyContext && !legacyContext.disruptionTouchesAlternateEndpoints) {
+    criticalInstructions = `
+CRITICAL INSTRUCTIONS: ROUTE IMPACT shows the disrupted node is not an endpoint of the listed alternate edges. Do not claim those edges are directly blocked by this disruption; say so clearly in each "reasoning" field.
+
+`;
+  }
+
   return `You are a supply chain risk analyst. A disruption has been detected.
 
 DISRUPTION: ${disruption.disruption_type} at ${disruption.location || disruption.affected_node_id} — severity ${disruption.severity}/1.0
+DISRUPTED NODE ID: ${disruption.affected_node_id}
 
-${shipmentBlock}AFFECTED NODES (from graph propagation):
+${shipmentBlock}${routeImpactBlock}AFFECTED NODES (from graph propagation):
 ${JSON.stringify(affectedNodes.slice(0, 15), null, 2)}
 
 AVAILABLE ALTERNATE ROUTES (pre-computed by graph engine):
 ${JSON.stringify(alternateRoutes, null, 2)}
-
+${criticalInstructions}
 Return ONLY valid JSON — no preamble, no markdown:
 {
   "recommendations": [
@@ -597,7 +717,7 @@ Return ONLY valid JSON — no preamble, no markdown:
   ]
 }
 
-Provide exactly 3 ranked recommendations. Prefer edges from AVAILABLE ALTERNATE ROUTES and copy their source_node_id and target_node_id when applicable. Be specific about ports, carriers, and transport modes.`;
+Provide exactly 3 ranked recommendations. Prefer edges from AVAILABLE ALTERNATE ROUTES and copy their source_node_id and target_node_id when applicable. Be specific about ports, carriers, and transport modes unless CRITICAL INSTRUCTIONS say otherwise.`;
 }
 
 async function callGemini(prompt) {
