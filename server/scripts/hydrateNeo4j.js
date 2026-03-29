@@ -16,12 +16,12 @@ async function hydrate() {
   try {
     console.log('--- 🛡️ SupplyGuard Neo4j Hydration Start ---');
 
-    // 1. Clear existing constraints/indexes (if we want to be safe) or just keep it simple
-    // 2. Clear all data (uncomment if you want a fresh start)
-    // console.log('Clearing existing data...');
-    // await session.run('MATCH (n) DETACH DELETE n');
+    if (process.env.NEO4J_CLEAR === 'true') {
+      console.log('NEO4J_CLEAR=true — removing all nodes and relationships...');
+      await session.run('MATCH (n) DETACH DELETE n');
+    }
 
-    // 3. Create Nodes
+    // Create Nodes
     console.log(`Ingesting ${seedData.nodes.length} nodes...`);
     for (const node of seedData.nodes) {
       // Map node type to a Capitalized Label (e.g., 'port' -> ':Port')

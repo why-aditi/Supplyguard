@@ -1,87 +1,108 @@
-# 🕵️ How SupplyGuard AI Works
+# How SupplyGuard Works
 
-SupplyGuard AI is a multi-layered platform designed for real-time maritime intelligence and supply chain risk mitigation. This document provides a technical deep-dive into the ingestion, processing, and visualization layers.
-
----
-
-## 🏗️ System Architecture
-
-The system consists of three primary services orchestrated via **Docker Compose**:
-
-1.  **Frontend (Next.js)**: A real-time dashboard built with D3.js for graph visualization and WebSockets for live state updates.
-2.  **Backend (Node.js)**: The central transition layer that manages session state, hosts the **Neo4j Cypher Engine**, and handles WebSocket broadcasting.
-3.  **Graph Database (Neo4j Aura)**: The primary persistent storage for the supply chain graph, relationships, and live risk scores.
-4.  **ML Service (Python/FastAPI)**: A specialized service for NLP-driven disruption classification.
-
+Technical overview of ingestion, graph state, risk propagation, LLM rerouting, and the real-time dashboard. For setup and commands, see the root [README.md](README.md).
 
 ---
 
-## 📡 1. Data Ingestion Layer
+## System architecture
 
-SupplyGuard monitors two primary data streams to detect potential disruptions:
+The stack is usually run as separate processes (or via Docker Compose):
 
-### 🚢 Maritime Intelligence (AIS Stream)
-- The server connects to **AISStream.io** via a high-speed WebSocket.
-- We monitor **12 critical global port zones** (lat/long bounding boxes).
-- **Congestion Detection**: If multiple vessels (especially tankers/cargo ships) drop below 1.0 knots within a port zone for an extended period, the system flags a "Port Delay" disruption.
+| Layer | Role |
+| ----- | ---- |
+| **Client (Next.js)** | Dashboard: geographic supply map (D3), WebSocket client, simulation UI, recommendation drawer. |
+| **Server (Node.js / Express)** | REST API, WebSocket broadcast, AIS and RSS workers, graph initialization, LLM calls for reroute text. |
+| **Graph store** | **Neo4j** (optional) *or* an in-memory graph loaded from **`data/seed/graph-seed.json`**. |
+| **ML service (Python / FastAPI)** | News article classification with DistilBERT (when enabled). |
 
-### 📰 Global News Ingestion (RSS)
-- A background worker polls global feeds (Reuters, BBC, Maritime Executive) every 10 minutes.
-- New articles are sent to the **ML Service** for classification.
-
----
-
-## 🧠 2. Intelligence Layer (ML Service)
-
-This layer transforms raw data into actionable risk scores.
-
-### 🏷️ NLP Classification (DistilBERT)
-- We use a fine-tuned **DistilBERT** model (transformers library) to categorize news into four primary disruption types:
-    - `port_delay`, `weather_event`, `supplier_failure`, `geopolitical`.
-- **Confidence Threshold**: A configurable threshold (default 0.55) filters out noise and irrelevant news.
-- **Severity Estimation**: The model calculates a severity score ($0.0 - 1.0$) based on the classification confidence and the disruption type.
-
-### 📊 Graph-based Risk Propagation (Neo4j Cypher)
-- The supply chain is modeled in **Neo4j** as a complex graph of interconnected nodes.
-- **Cypher-powered Propagation**: When a node is disrupted, the backend executes a recursive Cypher query that traverses all downstream paths up to 6 hops away.
-- **Max-Risk Path Finding**: Unlike a simple BFS, the Neo4j engine calculates the impact across multiple converging paths. It identifies the "Highest Risk Path" for each affected node to ensure conservative risk estimation ($Risk_{target} = \max(Risk_{path1}, Risk_{path2}, \dots)$).
-- **Decay Factor ($0.7$)**: Risk score impact diminishes with distance from the source: $Severity \times 0.7^{depth}$.
-
+Supporting services (PostgreSQL, Redis) may be used depending on deployment; AIS positions and analytics can use Redis/DB as configured.
 
 ---
 
-## 🛣️ 3. AI-Driven Rerouting
+## 1. Data ingestion
 
-Once a disruption is confirmed, the system generates mitigation strategies:
+### Maritime (AIS)
 
-- **Prompt Engineering**: The system constructs a detailed prompt containing:
-    1.  The primary disruption details (type, location, severity).
-    2.  The list of affected downstream nodes (from the BFS engine).
-    3.  Pre-computed alternate routes (edges not affected by the disruption).
-- **LLM Orchestration**: The system attempts to use **Gemini 2.0 Flash** for its 1M+ context window and low latency. It falls back to **Groq (Llama 3.3 70B)** if Gemini is unavailable.
-- **Output**: Returns exactly 3 ranked recommendations with cost delta, lead time impact, and risk reduction percentages.
+- Optional **AISStream.io** WebSocket connection (`AISSTREAM_ENABLED` can disable it).
+- Workers watch defined **port zones** (bounding boxes). Slow speeds or clustering in a zone can contribute to congestion-style disruption signals.
 
----
+### News (RSS)
 
-## 📺 4. Real-time Visualization
-
-The frontend provides a "Living Map" of the supply chain:
-
-- **D3.js Force-Simulation**: Nodes are positioned using a force-directed layout, where "Criticality" (node degree) determines visual scale.
-- **WebSocket Synchronization**:
-    - **Risk Ripples**: When risk propagates, the server broadcasts updates one-by-one with a small delay ($400ms$ per hop), creating a visual "ripple effect" on the map.
-    - **Vessel Tracking**: Live vessel movements are rendered as tiny dots moving across the maritime routes.
-- **Interactive Simulation**: Users can manually trigger disruptions at any node to test "What-If" scenarios and see the cascading impact in real-time.
+- A cron-driven worker polls RSS feeds.
+- Articles can be classified by the **ML service** (DistilBERT) into disruption categories (e.g. port delay, weather, supplier, geopolitical) with a configurable confidence threshold.
 
 ---
 
-## 🛠️ Tech Stack Technicalities
+## 2. Supply network graph
 
-- **Communication**: REST API for static data, WebSockets (`ws` library) for live state.
-- **State Management**: **Zustand** on the client for lightweight, high-performance graph state synchronization.
-- **Persistence**: 
-    - **Neo4j Aura**: Stores the persistent supply chain graph and live risks.
-    - **Redis**: Stores high-frequency AIS vessel positions.
-    - **PostgreSQL**: Stores historical disruption events and long-term analytics.
+### Node types (five topology labels)
 
-- **Model Storage**: **Git LFS** tracks the 250MB+ weights for the DistilBERT model.
+The demo graph uses five kinds of node, aligned with map styling and Neo4j labels:
+
+- **port** — Ports, canals, strategic sea hubs  
+- **factory** — Manufacturing / assembly  
+- **warehouse** — Distribution / 3PL  
+- **supplier** — Materials and tier inputs  
+- **carrier** — Ocean/air logistics operators  
+
+Edges are modeled as directed **`SHIPS_TO`** relationships with metadata (`weight`, lead time, mode, volume) used for propagation and line weight on the map.
+
+### Where the graph lives
+
+1. **Canonical file**: `data/seed/graph-seed.json` (generated by `data/seed/generate-graph-seed.mjs`).
+2. **Client fallback**: `client/public/graph-seed.json` should stay in sync for offline or API-down loading.
+3. **Neo4j** (when `USE_NEO4J=true`): The API reads the graph via `fetchFullGraph()` after you **hydrate** from the same JSON (`server/scripts/hydrateNeo4j.js`). Use `NEO4J_CLEAR=true` for a full replace when the seed shape changes.
+
+If Neo4j is off, unreachable, or empty, the server loads the JSON file into memory (`initializeGraph`).
+
+---
+
+## 3. Risk propagation
+
+When a node is disrupted (simulation, AIS, or RSS-driven path), risk spreads along outgoing edges.
+
+- **`USE_NEO4J=false`** (default for local dev): **In-memory BFS** over `graphEdges` with decay (e.g. `GRAPH_DECAY_FACTOR`, max depth `GRAPH_MAX_DEPTH`).
+- **`USE_NEO4J=true`**: **Cypher** traversal in Neo4j (`propagateRiskNeo4j`), combining edge weights and depth; the server merges resulting scores into the same in-memory node map used for the API and WebSockets.
+
+The server broadcasts risk updates over the WebSocket (staggered per hop for a “ripple” effect on the UI).
+
+---
+
+## 4. AI-driven rerouting
+
+After propagation, the server builds a prompt with disruption context, affected nodes, and **alternate graph edges** (from graph logic, including optional origin/destination–aware paths when O/D are provided).
+
+- **Gemini** is tried first; **Groq** is used as fallback when configured.
+- The response is **three ranked recommendations** with cost, lead-time, and risk deltas.
+
+Each recommendation can include **`source_node_id`** and **`target_node_id`** matching real graph endpoints. The UI draws the corresponding edge on the map in **green** when you select a card; matching is **bidirectional** (LLM order may not match the stored edge direction).
+
+---
+
+## 5. Real-time visualization
+
+### Map (D3 + geographic projection)
+
+- Nodes use **lat/lng** from the graph and a **geo projection** (Natural Earth) over a world basemap — not a force layout on arbitrary coordinates.
+- Edge stroke width reflects volume and risk; selected reroute legs are highlighted explicitly (green stroke/fill).
+
+### WebSockets
+
+- Clients receive graph-related updates (risk ripples, disruptions) for live refresh without polling the full graph on every tick.
+
+### Simulation
+
+- Users pick a **target node**, optional **disruption type** and **severity**, and optionally **origin** and **destination** for route-aware prompts.
+- **`POST /api/simulate`** runs propagation and LLM recommendations; the recommendation drawer can open with ranked options.
+
+---
+
+## 6. Implementation notes
+
+| Concern | Detail |
+| ------- | ------ |
+| API vs file graph | `/api/graph` serves the same logical graph the server holds in memory (Neo4j-backed or JSON). |
+| Environment | Root `.env`: `USE_NEO4J`, `NEO4J_*`, `NEO4J_CLEAR` (hydrate only), AIS/LLM keys — see `.env.example`. |
+| Large models | DistilBERT weights may be tracked with **Git LFS**. |
+
+For operational order (regenerate seed → copy to `client/public` → hydrate Neo4j → enable `USE_NEO4J`), see the **Graph seed and Neo4j** section in [README.md](README.md).

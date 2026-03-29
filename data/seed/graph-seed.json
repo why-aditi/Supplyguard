@@ -1,170 +1,4035 @@
 {
   "metadata": {
-    "version": "1.0",
-    "generated": "2025-01-15",
-    "description": "SupplyGuard AI seed supply chain graph — 60 nodes, 85 edges representing a global electronics/automotive supply chain"
+    "version": "2.0",
+    "generated": "2026-03-29",
+    "description": "SupplyGuard seed graph — 136 nodes, 282 edges (dense multi-type supply chain)"
   },
   "nodes": [
-    {"id": "port-shanghai", "name": "Port of Shanghai", "type": "port", "location": {"lat": 31.23, "lng": 121.47, "country": "China"}, "current_risk": 0.0, "tier": 1, "centrality": 0.92},
-    {"id": "port-shenzhen", "name": "Port of Shenzhen", "type": "port", "location": {"lat": 22.54, "lng": 114.05, "country": "China"}, "current_risk": 0.0, "tier": 1, "centrality": 0.85},
-    {"id": "port-singapore", "name": "Port of Singapore", "type": "port", "location": {"lat": 1.26, "lng": 103.84, "country": "Singapore"}, "current_risk": 0.0, "tier": 1, "centrality": 0.95},
-    {"id": "port-rotterdam", "name": "Port of Rotterdam", "type": "port", "location": {"lat": 51.95, "lng": 4.14, "country": "Netherlands"}, "current_risk": 0.0, "tier": 1, "centrality": 0.88},
-    {"id": "port-la", "name": "Port of Los Angeles", "type": "port", "location": {"lat": 33.74, "lng": -118.27, "country": "USA"}, "current_risk": 0.0, "tier": 1, "centrality": 0.82},
-    {"id": "port-hamburg", "name": "Port of Hamburg", "type": "port", "location": {"lat": 53.54, "lng": 9.99, "country": "Germany"}, "current_risk": 0.0, "tier": 1, "centrality": 0.75},
-    {"id": "port-busan", "name": "Port of Busan", "type": "port", "location": {"lat": 35.10, "lng": 129.04, "country": "South Korea"}, "current_risk": 0.0, "tier": 1, "centrality": 0.78},
-    {"id": "port-dubai", "name": "Port of Jebel Ali", "type": "port", "location": {"lat": 25.00, "lng": 55.06, "country": "UAE"}, "current_risk": 0.0, "tier": 1, "centrality": 0.72},
-    {"id": "port-lehavre", "name": "Port of Le Havre", "type": "port", "location": {"lat": 49.49, "lng": 0.11, "country": "France"}, "current_risk": 0.0, "tier": 2, "centrality": 0.55},
-    {"id": "port-yokohama", "name": "Port of Yokohama", "type": "port", "location": {"lat": 35.44, "lng": 139.64, "country": "Japan"}, "current_risk": 0.0, "tier": 2, "centrality": 0.60},
-    {"id": "port-mumbai", "name": "Port of Mumbai (JNPT)", "type": "port", "location": {"lat": 18.95, "lng": 72.95, "country": "India"}, "current_risk": 0.0, "tier": 2, "centrality": 0.58},
-
-    {"id": "factory-tsmc", "name": "TSMC Hsinchu Fab", "type": "factory", "location": {"lat": 24.80, "lng": 120.97, "country": "Taiwan"}, "current_risk": 0.0, "tier": 1, "centrality": 0.90},
-    {"id": "factory-samsung", "name": "Samsung Pyeongtaek Plant", "type": "factory", "location": {"lat": 36.99, "lng": 127.09, "country": "South Korea"}, "current_risk": 0.0, "tier": 1, "centrality": 0.82},
-    {"id": "factory-foxconn", "name": "Foxconn Zhengzhou", "type": "factory", "location": {"lat": 34.75, "lng": 113.65, "country": "China"}, "current_risk": 0.0, "tier": 1, "centrality": 0.78},
-    {"id": "factory-bosch", "name": "Bosch Stuttgart Plant", "type": "factory", "location": {"lat": 48.78, "lng": 9.18, "country": "Germany"}, "current_risk": 0.0, "tier": 2, "centrality": 0.62},
-    {"id": "factory-toyota", "name": "Toyota Motomachi Plant", "type": "factory", "location": {"lat": 35.05, "lng": 137.16, "country": "Japan"}, "current_risk": 0.0, "tier": 2, "centrality": 0.65},
-    {"id": "factory-intel", "name": "Intel Chandler Fab", "type": "factory", "location": {"lat": 33.30, "lng": -111.84, "country": "USA"}, "current_risk": 0.0, "tier": 2, "centrality": 0.58},
-    {"id": "factory-byd", "name": "BYD Shenzhen Plant", "type": "factory", "location": {"lat": 22.65, "lng": 114.00, "country": "China"}, "current_risk": 0.0, "tier": 2, "centrality": 0.55},
-    {"id": "factory-vw", "name": "Volkswagen Wolfsburg", "type": "factory", "location": {"lat": 52.42, "lng": 10.79, "country": "Germany"}, "current_risk": 0.0, "tier": 2, "centrality": 0.60},
-    {"id": "factory-tesla", "name": "Tesla Gigafactory Shanghai", "type": "factory", "location": {"lat": 31.10, "lng": 121.73, "country": "China"}, "current_risk": 0.0, "tier": 2, "centrality": 0.58},
-
-    {"id": "supplier-catl", "name": "CATL Battery (Ningde)", "type": "supplier", "location": {"lat": 26.65, "lng": 119.52, "country": "China"}, "current_risk": 0.0, "tier": 2, "centrality": 0.68},
-    {"id": "supplier-lg-chem", "name": "LG Chem Ochang", "type": "supplier", "location": {"lat": 36.72, "lng": 127.43, "country": "South Korea"}, "current_risk": 0.0, "tier": 2, "centrality": 0.55},
-    {"id": "supplier-murata", "name": "Murata Manufacturing", "type": "supplier", "location": {"lat": 35.01, "lng": 135.77, "country": "Japan"}, "current_risk": 0.0, "tier": 2, "centrality": 0.52},
-    {"id": "supplier-infineon", "name": "Infineon Dresden", "type": "supplier", "location": {"lat": 51.05, "lng": 13.74, "country": "Germany"}, "current_risk": 0.0, "tier": 2, "centrality": 0.50},
-    {"id": "supplier-sk-hynix", "name": "SK Hynix Icheon", "type": "supplier", "location": {"lat": 37.27, "lng": 127.44, "country": "South Korea"}, "current_risk": 0.0, "tier": 2, "centrality": 0.60},
-    {"id": "supplier-nxp", "name": "NXP Eindhoven", "type": "supplier", "location": {"lat": 51.44, "lng": 5.47, "country": "Netherlands"}, "current_risk": 0.0, "tier": 3, "centrality": 0.42},
-    {"id": "supplier-basf", "name": "BASF Ludwigshafen", "type": "supplier", "location": {"lat": 49.48, "lng": 8.43, "country": "Germany"}, "current_risk": 0.0, "tier": 3, "centrality": 0.38},
-    {"id": "supplier-panasonic", "name": "Panasonic Energy (Osaka)", "type": "supplier", "location": {"lat": 34.69, "lng": 135.50, "country": "Japan"}, "current_risk": 0.0, "tier": 2, "centrality": 0.48},
-
-    {"id": "warehouse-la", "name": "LA Distribution Center", "type": "warehouse", "location": {"lat": 33.93, "lng": -118.24, "country": "USA"}, "current_risk": 0.0, "tier": 3, "centrality": 0.40},
-    {"id": "warehouse-chicago", "name": "Chicago Logistics Hub", "type": "warehouse", "location": {"lat": 41.88, "lng": -87.63, "country": "USA"}, "current_risk": 0.0, "tier": 3, "centrality": 0.35},
-    {"id": "warehouse-frankfurt", "name": "Frankfurt Central Warehouse", "type": "warehouse", "location": {"lat": 50.11, "lng": 8.68, "country": "Germany"}, "current_risk": 0.0, "tier": 3, "centrality": 0.38},
-    {"id": "warehouse-dubai", "name": "Dubai Free Zone Hub", "type": "warehouse", "location": {"lat": 25.22, "lng": 55.28, "country": "UAE"}, "current_risk": 0.0, "tier": 3, "centrality": 0.35},
-    {"id": "warehouse-tokyo", "name": "Tokyo Distribution Center", "type": "warehouse", "location": {"lat": 35.68, "lng": 139.69, "country": "Japan"}, "current_risk": 0.0, "tier": 3, "centrality": 0.32},
-    {"id": "warehouse-singapore", "name": "Singapore Logistics Hub", "type": "warehouse", "location": {"lat": 1.35, "lng": 103.82, "country": "Singapore"}, "current_risk": 0.0, "tier": 3, "centrality": 0.38},
-    {"id": "warehouse-mumbai", "name": "Mumbai Warehouse", "type": "warehouse", "location": {"lat": 19.08, "lng": 72.88, "country": "India"}, "current_risk": 0.0, "tier": 3, "centrality": 0.25},
-
-    {"id": "carrier-maersk", "name": "Maersk Line", "type": "carrier", "location": {"lat": 55.68, "lng": 12.57, "country": "Denmark"}, "current_risk": 0.0, "tier": 1, "centrality": 0.85},
-    {"id": "carrier-cosco", "name": "COSCO Shipping", "type": "carrier", "location": {"lat": 31.23, "lng": 121.47, "country": "China"}, "current_risk": 0.0, "tier": 1, "centrality": 0.78},
-    {"id": "carrier-msc", "name": "MSC Mediterranean", "type": "carrier", "location": {"lat": 46.20, "lng": 6.14, "country": "Switzerland"}, "current_risk": 0.0, "tier": 1, "centrality": 0.75},
-    {"id": "carrier-dhl", "name": "DHL Express (Air)", "type": "carrier", "location": {"lat": 50.11, "lng": 8.68, "country": "Germany"}, "current_risk": 0.0, "tier": 2, "centrality": 0.60},
-    {"id": "carrier-fedex", "name": "FedEx Air Cargo", "type": "carrier", "location": {"lat": 35.05, "lng": -89.98, "country": "USA"}, "current_risk": 0.0, "tier": 2, "centrality": 0.55},
-    {"id": "carrier-evergreen", "name": "Evergreen Marine", "type": "carrier", "location": {"lat": 25.03, "lng": 121.57, "country": "Taiwan"}, "current_risk": 0.0, "tier": 2, "centrality": 0.58},
-
-    {"id": "hub-suez", "name": "Suez Canal", "type": "port", "location": {"lat": 30.46, "lng": 32.35, "country": "Egypt"}, "current_risk": 0.0, "tier": 1, "centrality": 0.88},
-    {"id": "hub-malacca", "name": "Strait of Malacca", "type": "port", "location": {"lat": 2.50, "lng": 101.80, "country": "Malaysia"}, "current_risk": 0.0, "tier": 1, "centrality": 0.82},
-    {"id": "hub-panama", "name": "Panama Canal", "type": "port", "location": {"lat": 9.08, "lng": -79.68, "country": "Panama"}, "current_risk": 0.0, "tier": 1, "centrality": 0.75},
-
-    {"id": "supplier-rare-earth", "name": "Baotou Rare Earth Mines", "type": "supplier", "location": {"lat": 40.66, "lng": 109.84, "country": "China"}, "current_risk": 0.0, "tier": 1, "centrality": 0.72},
-    {"id": "supplier-lithium-cl", "name": "Atacama Lithium (SQM)", "type": "supplier", "location": {"lat": -23.50, "lng": -68.20, "country": "Chile"}, "current_risk": 0.0, "tier": 1, "centrality": 0.65},
-    {"id": "supplier-copper-cl", "name": "Escondida Copper Mine", "type": "supplier", "location": {"lat": -24.27, "lng": -69.07, "country": "Chile"}, "current_risk": 0.0, "tier": 2, "centrality": 0.50},
-    {"id": "factory-gigafactory-nv", "name": "Tesla Gigafactory Nevada", "type": "factory", "location": {"lat": 39.54, "lng": -119.44, "country": "USA"}, "current_risk": 0.0, "tier": 2, "centrality": 0.52},
-
-    {"id": "warehouse-shenzhen", "name": "Shenzhen Bonded Warehouse", "type": "warehouse", "location": {"lat": 22.55, "lng": 114.10, "country": "China"}, "current_risk": 0.0, "tier": 3, "centrality": 0.30},
-    {"id": "warehouse-rotterdam", "name": "Rotterdam Europoort Hub", "type": "warehouse", "location": {"lat": 51.89, "lng": 4.29, "country": "Netherlands"}, "current_risk": 0.0, "tier": 3, "centrality": 0.35},
-
-    {"id": "supplier-qualcomm", "name": "Qualcomm San Diego", "type": "supplier", "location": {"lat": 32.90, "lng": -117.19, "country": "USA"}, "current_risk": 0.0, "tier": 2, "centrality": 0.55},
-    {"id": "supplier-mediatek", "name": "MediaTek Hsinchu", "type": "supplier", "location": {"lat": 24.80, "lng": 120.97, "country": "Taiwan"}, "current_risk": 0.0, "tier": 2, "centrality": 0.50},
-    {"id": "factory-apple-india", "name": "Apple Foxconn Chennai", "type": "factory", "location": {"lat": 12.84, "lng": 80.15, "country": "India"}, "current_risk": 0.0, "tier": 2, "centrality": 0.45},
-
-    {"id": "warehouse-memphis", "name": "Memphis Air Cargo Hub", "type": "warehouse", "location": {"lat": 35.04, "lng": -89.98, "country": "USA"}, "current_risk": 0.0, "tier": 3, "centrality": 0.30},
-    {"id": "warehouse-hong-kong", "name": "Hong Kong Free Port", "type": "warehouse", "location": {"lat": 22.31, "lng": 114.17, "country": "Hong Kong"}, "current_risk": 0.0, "tier": 2, "centrality": 0.55}
+    {
+      "id": "port-shanghai",
+      "name": "Port of Shanghai",
+      "type": "port",
+      "location": {
+        "lat": 31.23,
+        "lng": 121.47,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.92
+    },
+    {
+      "id": "port-shenzhen",
+      "name": "Port of Shenzhen",
+      "type": "port",
+      "location": {
+        "lat": 22.54,
+        "lng": 114.05,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.85
+    },
+    {
+      "id": "port-ningbo",
+      "name": "Port of Ningbo-Zhoushan",
+      "type": "port",
+      "location": {
+        "lat": 29.87,
+        "lng": 121.55,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.9
+    },
+    {
+      "id": "port-qingdao",
+      "name": "Port of Qingdao",
+      "type": "port",
+      "location": {
+        "lat": 36.07,
+        "lng": 120.32,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.84
+    },
+    {
+      "id": "port-tianjin",
+      "name": "Port of Tianjin",
+      "type": "port",
+      "location": {
+        "lat": 38.97,
+        "lng": 117.75,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.83
+    },
+    {
+      "id": "port-xiamen",
+      "name": "Port of Xiamen",
+      "type": "port",
+      "location": {
+        "lat": 24.48,
+        "lng": 118.09,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.72
+    },
+    {
+      "id": "port-singapore",
+      "name": "Port of Singapore",
+      "type": "port",
+      "location": {
+        "lat": 1.26,
+        "lng": 103.84,
+        "country": "Singapore"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.95
+    },
+    {
+      "id": "port-tanjung-pelepas",
+      "name": "Port of Tanjung Pelepas",
+      "type": "port",
+      "location": {
+        "lat": 1.37,
+        "lng": 103.55,
+        "country": "Malaysia"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.68
+    },
+    {
+      "id": "port-rotterdam",
+      "name": "Port of Rotterdam",
+      "type": "port",
+      "location": {
+        "lat": 51.95,
+        "lng": 4.14,
+        "country": "Netherlands"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.88
+    },
+    {
+      "id": "port-antwerp",
+      "name": "Port of Antwerp-Bruges",
+      "type": "port",
+      "location": {
+        "lat": 51.23,
+        "lng": 4.42,
+        "country": "Belgium"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.86
+    },
+    {
+      "id": "port-hamburg",
+      "name": "Port of Hamburg",
+      "type": "port",
+      "location": {
+        "lat": 53.54,
+        "lng": 9.99,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.75
+    },
+    {
+      "id": "port-bremerhaven",
+      "name": "Port of Bremerhaven",
+      "type": "port",
+      "location": {
+        "lat": 53.59,
+        "lng": 8.57,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.7
+    },
+    {
+      "id": "port-felixstowe",
+      "name": "Port of Felixstowe",
+      "type": "port",
+      "location": {
+        "lat": 51.95,
+        "lng": 1.31,
+        "country": "UK"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.74
+    },
+    {
+      "id": "port-lehavre",
+      "name": "Port of Le Havre",
+      "type": "port",
+      "location": {
+        "lat": 49.49,
+        "lng": 0.11,
+        "country": "France"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "port-barcelona",
+      "name": "Port of Barcelona",
+      "type": "port",
+      "location": {
+        "lat": 41.35,
+        "lng": 2.18,
+        "country": "Spain"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.72
+    },
+    {
+      "id": "port-piraeus",
+      "name": "Port of Piraeus",
+      "type": "port",
+      "location": {
+        "lat": 37.94,
+        "lng": 23.64,
+        "country": "Greece"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.7
+    },
+    {
+      "id": "port-la",
+      "name": "Port of Los Angeles",
+      "type": "port",
+      "location": {
+        "lat": 33.74,
+        "lng": -118.27,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.82
+    },
+    {
+      "id": "port-long-beach",
+      "name": "Port of Long Beach",
+      "type": "port",
+      "location": {
+        "lat": 33.75,
+        "lng": -118.22,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.8
+    },
+    {
+      "id": "port-oakland",
+      "name": "Port of Oakland",
+      "type": "port",
+      "location": {
+        "lat": 37.8,
+        "lng": -122.27,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.65
+    },
+    {
+      "id": "port-seattle",
+      "name": "Port of Seattle",
+      "type": "port",
+      "location": {
+        "lat": 47.6,
+        "lng": -122.35,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.68
+    },
+    {
+      "id": "port-savannah",
+      "name": "Port of Savannah",
+      "type": "port",
+      "location": {
+        "lat": 32.08,
+        "lng": -81.09,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.7
+    },
+    {
+      "id": "port-charleston",
+      "name": "Port of Charleston",
+      "type": "port",
+      "location": {
+        "lat": 32.78,
+        "lng": -79.92,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.66
+    },
+    {
+      "id": "port-houston",
+      "name": "Port of Houston",
+      "type": "port",
+      "location": {
+        "lat": 29.73,
+        "lng": -95.27,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.75
+    },
+    {
+      "id": "port-norfolk",
+      "name": "Port of Virginia (Norfolk)",
+      "type": "port",
+      "location": {
+        "lat": 36.95,
+        "lng": -76.33,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.67
+    },
+    {
+      "id": "port-vancouver",
+      "name": "Port of Vancouver",
+      "type": "port",
+      "location": {
+        "lat": 49.29,
+        "lng": -123.03,
+        "country": "Canada"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.72
+    },
+    {
+      "id": "port-busan",
+      "name": "Port of Busan",
+      "type": "port",
+      "location": {
+        "lat": 35.1,
+        "lng": 129.04,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.78
+    },
+    {
+      "id": "port-kaohsiung",
+      "name": "Port of Kaohsiung",
+      "type": "port",
+      "location": {
+        "lat": 22.62,
+        "lng": 120.28,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.7
+    },
+    {
+      "id": "port-yokohama",
+      "name": "Port of Yokohama",
+      "type": "port",
+      "location": {
+        "lat": 35.44,
+        "lng": 139.64,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.6
+    },
+    {
+      "id": "port-tokyo",
+      "name": "Port of Tokyo",
+      "type": "port",
+      "location": {
+        "lat": 35.62,
+        "lng": 139.79,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.72
+    },
+    {
+      "id": "port-mumbai",
+      "name": "Port of Mumbai (JNPT)",
+      "type": "port",
+      "location": {
+        "lat": 18.95,
+        "lng": 72.95,
+        "country": "India"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "port-chennai",
+      "name": "Port of Chennai",
+      "type": "port",
+      "location": {
+        "lat": 13.1,
+        "lng": 80.3,
+        "country": "India"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "port-dubai",
+      "name": "Port of Jebel Ali",
+      "type": "port",
+      "location": {
+        "lat": 25,
+        "lng": 55.06,
+        "country": "UAE"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.72
+    },
+    {
+      "id": "port-jeddah",
+      "name": "Port of Jeddah",
+      "type": "port",
+      "location": {
+        "lat": 21.49,
+        "lng": 39.18,
+        "country": "Saudi Arabia"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.62
+    },
+    {
+      "id": "port-colombo",
+      "name": "Port of Colombo",
+      "type": "port",
+      "location": {
+        "lat": 6.94,
+        "lng": 79.85,
+        "country": "Sri Lanka"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "port-santos",
+      "name": "Port of Santos",
+      "type": "port",
+      "location": {
+        "lat": -23.96,
+        "lng": -46.31,
+        "country": "Brazil"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.65
+    },
+    {
+      "id": "hub-suez",
+      "name": "Suez Canal",
+      "type": "port",
+      "location": {
+        "lat": 30.46,
+        "lng": 32.35,
+        "country": "Egypt"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.88
+    },
+    {
+      "id": "hub-malacca",
+      "name": "Strait of Malacca",
+      "type": "port",
+      "location": {
+        "lat": 2.5,
+        "lng": 101.8,
+        "country": "Malaysia"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.82
+    },
+    {
+      "id": "hub-panama",
+      "name": "Panama Canal",
+      "type": "port",
+      "location": {
+        "lat": 9.08,
+        "lng": -79.68,
+        "country": "Panama"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.75
+    },
+    {
+      "id": "factory-tsmc",
+      "name": "TSMC Hsinchu Fab",
+      "type": "factory",
+      "location": {
+        "lat": 24.8,
+        "lng": 120.97,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.9
+    },
+    {
+      "id": "factory-samsung",
+      "name": "Samsung Pyeongtaek Plant",
+      "type": "factory",
+      "location": {
+        "lat": 36.99,
+        "lng": 127.09,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.82
+    },
+    {
+      "id": "factory-foxconn",
+      "name": "Foxconn Zhengzhou",
+      "type": "factory",
+      "location": {
+        "lat": 34.75,
+        "lng": 113.65,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.78
+    },
+    {
+      "id": "factory-luxshare",
+      "name": "Luxshare Kunshan",
+      "type": "factory",
+      "location": {
+        "lat": 31.38,
+        "lng": 120.98,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.65
+    },
+    {
+      "id": "factory-goertek",
+      "name": "Goertek Weifang",
+      "type": "factory",
+      "location": {
+        "lat": 36.72,
+        "lng": 119.15,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "factory-bosch",
+      "name": "Bosch Stuttgart Plant",
+      "type": "factory",
+      "location": {
+        "lat": 48.78,
+        "lng": 9.18,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.62
+    },
+    {
+      "id": "factory-toyota",
+      "name": "Toyota Motomachi Plant",
+      "type": "factory",
+      "location": {
+        "lat": 35.05,
+        "lng": 137.16,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.65
+    },
+    {
+      "id": "factory-honda",
+      "name": "Honda Suzuka Factory",
+      "type": "factory",
+      "location": {
+        "lat": 34.88,
+        "lng": 136.58,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "factory-intel",
+      "name": "Intel Chandler Fab",
+      "type": "factory",
+      "location": {
+        "lat": 33.3,
+        "lng": -111.84,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "factory-byd",
+      "name": "BYD Shenzhen Plant",
+      "type": "factory",
+      "location": {
+        "lat": 22.65,
+        "lng": 114,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "factory-vw",
+      "name": "Volkswagen Wolfsburg",
+      "type": "factory",
+      "location": {
+        "lat": 52.42,
+        "lng": 10.79,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.6
+    },
+    {
+      "id": "factory-bmw",
+      "name": "BMW Spartanburg",
+      "type": "factory",
+      "location": {
+        "lat": 35.1,
+        "lng": -82.02,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "factory-rivian",
+      "name": "Rivian Normal Plant",
+      "type": "factory",
+      "location": {
+        "lat": 40.51,
+        "lng": -88.99,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "factory-tesla",
+      "name": "Tesla Gigafactory Shanghai",
+      "type": "factory",
+      "location": {
+        "lat": 31.1,
+        "lng": 121.73,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "factory-gigafactory-nv",
+      "name": "Tesla Gigafactory Nevada",
+      "type": "factory",
+      "location": {
+        "lat": 39.54,
+        "lng": -119.44,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "factory-stellantis",
+      "name": "Stellantis Tychy",
+      "type": "factory",
+      "location": {
+        "lat": 50.13,
+        "lng": 19,
+        "country": "Poland"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "factory-renault",
+      "name": "Renault Flins",
+      "type": "factory",
+      "location": {
+        "lat": 49.03,
+        "lng": 1.64,
+        "country": "France"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "factory-nissan",
+      "name": "Nissan Sunderland",
+      "type": "factory",
+      "location": {
+        "lat": 54.91,
+        "lng": -1.47,
+        "country": "UK"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.54
+    },
+    {
+      "id": "factory-hyundai",
+      "name": "Hyundai Ulsan Plant",
+      "type": "factory",
+      "location": {
+        "lat": 35.55,
+        "lng": 129.32,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.72
+    },
+    {
+      "id": "factory-kia",
+      "name": "Kia Gwangju Plant",
+      "type": "factory",
+      "location": {
+        "lat": 35.16,
+        "lng": 126.92,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "factory-apple-india",
+      "name": "Apple Foxconn Chennai",
+      "type": "factory",
+      "location": {
+        "lat": 12.84,
+        "lng": 80.15,
+        "country": "India"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.45
+    },
+    {
+      "id": "factory-stmicro",
+      "name": "STMicro Catania",
+      "type": "factory",
+      "location": {
+        "lat": 37.5,
+        "lng": 15.09,
+        "country": "Italy"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "factory-nxp-austin",
+      "name": "NXP Austin Fab",
+      "type": "factory",
+      "location": {
+        "lat": 30.27,
+        "lng": -97.74,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "factory-micron-boise",
+      "name": "Micron Boise",
+      "type": "factory",
+      "location": {
+        "lat": 43.62,
+        "lng": -116.2,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "factory-amkor",
+      "name": "Amkor Tempe OSAT",
+      "type": "factory",
+      "location": {
+        "lat": 33.43,
+        "lng": -111.94,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.48
+    },
+    {
+      "id": "factory-delta",
+      "name": "Delta Electronics Taoyuan",
+      "type": "factory",
+      "location": {
+        "lat": 24.99,
+        "lng": 121.31,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.62
+    },
+    {
+      "id": "factory-compal",
+      "name": "Compal Taoyuan",
+      "type": "factory",
+      "location": {
+        "lat": 25.01,
+        "lng": 121.3,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "factory-wistron",
+      "name": "Wistron Kunshan",
+      "type": "factory",
+      "location": {
+        "lat": 31.38,
+        "lng": 120.98,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.56
+    },
+    {
+      "id": "warehouse-la",
+      "name": "LA Distribution Center",
+      "type": "warehouse",
+      "location": {
+        "lat": 33.93,
+        "lng": -118.24,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.4
+    },
+    {
+      "id": "warehouse-chicago",
+      "name": "Chicago Logistics Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 41.88,
+        "lng": -87.63,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.35
+    },
+    {
+      "id": "warehouse-memphis",
+      "name": "Memphis Air Cargo Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 35.04,
+        "lng": -89.98,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.3
+    },
+    {
+      "id": "warehouse-frankfurt",
+      "name": "Frankfurt Central Warehouse",
+      "type": "warehouse",
+      "location": {
+        "lat": 50.11,
+        "lng": 8.68,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.38
+    },
+    {
+      "id": "warehouse-rotterdam",
+      "name": "Rotterdam Europoort Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 51.89,
+        "lng": 4.29,
+        "country": "Netherlands"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.35
+    },
+    {
+      "id": "warehouse-antwerp-dc",
+      "name": "Antwerp 3PL DC",
+      "type": "warehouse",
+      "location": {
+        "lat": 51.2,
+        "lng": 4.42,
+        "country": "Belgium"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.34
+    },
+    {
+      "id": "warehouse-dubai",
+      "name": "Dubai Free Zone Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 25.22,
+        "lng": 55.28,
+        "country": "UAE"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.35
+    },
+    {
+      "id": "warehouse-tokyo",
+      "name": "Tokyo Distribution Center",
+      "type": "warehouse",
+      "location": {
+        "lat": 35.68,
+        "lng": 139.69,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.32
+    },
+    {
+      "id": "warehouse-osaka",
+      "name": "Osaka Logistics Park",
+      "type": "warehouse",
+      "location": {
+        "lat": 34.69,
+        "lng": 135.5,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.33
+    },
+    {
+      "id": "warehouse-singapore",
+      "name": "Singapore Logistics Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 1.35,
+        "lng": 103.82,
+        "country": "Singapore"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.38
+    },
+    {
+      "id": "warehouse-shenzhen",
+      "name": "Shenzhen Bonded Warehouse",
+      "type": "warehouse",
+      "location": {
+        "lat": 22.55,
+        "lng": 114.1,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.3
+    },
+    {
+      "id": "warehouse-hong-kong",
+      "name": "Hong Kong Free Port",
+      "type": "warehouse",
+      "location": {
+        "lat": 22.31,
+        "lng": 114.17,
+        "country": "Hong Kong"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "warehouse-mumbai",
+      "name": "Mumbai Warehouse",
+      "type": "warehouse",
+      "location": {
+        "lat": 19.08,
+        "lng": 72.88,
+        "country": "India"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.25
+    },
+    {
+      "id": "warehouse-bangalore",
+      "name": "Bangalore Fulfillment Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 12.97,
+        "lng": 77.59,
+        "country": "India"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.32
+    },
+    {
+      "id": "warehouse-mexico",
+      "name": "Mexico City Bonded DC",
+      "type": "warehouse",
+      "location": {
+        "lat": 19.43,
+        "lng": -99.13,
+        "country": "Mexico"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.38
+    },
+    {
+      "id": "warehouse-sao-paulo",
+      "name": "São Paulo 3PL",
+      "type": "warehouse",
+      "location": {
+        "lat": -23.55,
+        "lng": -46.63,
+        "country": "Brazil"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.34
+    },
+    {
+      "id": "warehouse-sydney",
+      "name": "Sydney Distribution",
+      "type": "warehouse",
+      "location": {
+        "lat": -33.87,
+        "lng": 151.21,
+        "country": "Australia"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.36
+    },
+    {
+      "id": "warehouse-melbourne",
+      "name": "Melbourne Logistics",
+      "type": "warehouse",
+      "location": {
+        "lat": -37.81,
+        "lng": 144.96,
+        "country": "Australia"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.33
+    },
+    {
+      "id": "warehouse-johannesburg",
+      "name": "Johannesburg Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": -26.2,
+        "lng": 28.04,
+        "country": "South Africa"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.3
+    },
+    {
+      "id": "warehouse-dublin",
+      "name": "Dublin EU Fulfillment",
+      "type": "warehouse",
+      "location": {
+        "lat": 53.35,
+        "lng": -6.26,
+        "country": "Ireland"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.4
+    },
+    {
+      "id": "warehouse-warsaw",
+      "name": "Warsaw Central DC",
+      "type": "warehouse",
+      "location": {
+        "lat": 52.23,
+        "lng": 21.01,
+        "country": "Poland"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.35
+    },
+    {
+      "id": "warehouse-prague",
+      "name": "Prague Regional DC",
+      "type": "warehouse",
+      "location": {
+        "lat": 50.08,
+        "lng": 14.44,
+        "country": "Czech Republic"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.32
+    },
+    {
+      "id": "warehouse-stockholm",
+      "name": "Stockholm Nordic Hub",
+      "type": "warehouse",
+      "location": {
+        "lat": 59.33,
+        "lng": 18.07,
+        "country": "Sweden"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.33
+    },
+    {
+      "id": "warehouse-toronto",
+      "name": "Toronto 3PL",
+      "type": "warehouse",
+      "location": {
+        "lat": 43.65,
+        "lng": -79.38,
+        "country": "Canada"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.36
+    },
+    {
+      "id": "warehouse-montreal",
+      "name": "Montreal Distribution",
+      "type": "warehouse",
+      "location": {
+        "lat": 45.5,
+        "lng": -73.57,
+        "country": "Canada"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.34
+    },
+    {
+      "id": "warehouse-seoul",
+      "name": "Seoul Fulfillment",
+      "type": "warehouse",
+      "location": {
+        "lat": 37.57,
+        "lng": 126.98,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.38
+    },
+    {
+      "id": "warehouse-hcmc",
+      "name": "Ho Chi Minh Logistics",
+      "type": "warehouse",
+      "location": {
+        "lat": 10.82,
+        "lng": 106.63,
+        "country": "Vietnam"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.36
+    },
+    {
+      "id": "warehouse-jakarta",
+      "name": "Jakarta Bonded DC",
+      "type": "warehouse",
+      "location": {
+        "lat": -6.2,
+        "lng": 106.85,
+        "country": "Indonesia"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.34
+    },
+    {
+      "id": "supplier-catl",
+      "name": "CATL Battery (Ningde)",
+      "type": "supplier",
+      "location": {
+        "lat": 26.65,
+        "lng": 119.52,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.68
+    },
+    {
+      "id": "supplier-lg-chem",
+      "name": "LG Chem Ochang",
+      "type": "supplier",
+      "location": {
+        "lat": 36.72,
+        "lng": 127.43,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "supplier-sk-hynix",
+      "name": "SK Hynix Icheon",
+      "type": "supplier",
+      "location": {
+        "lat": 37.27,
+        "lng": 127.44,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.6
+    },
+    {
+      "id": "supplier-murata",
+      "name": "Murata Kyoto",
+      "type": "supplier",
+      "location": {
+        "lat": 35.01,
+        "lng": 135.77,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "supplier-infineon",
+      "name": "Infineon Dresden",
+      "type": "supplier",
+      "location": {
+        "lat": 51.05,
+        "lng": 13.74,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "supplier-nxp",
+      "name": "NXP Eindhoven",
+      "type": "supplier",
+      "location": {
+        "lat": 51.44,
+        "lng": 5.47,
+        "country": "Netherlands"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.42
+    },
+    {
+      "id": "supplier-basf",
+      "name": "BASF Ludwigshafen",
+      "type": "supplier",
+      "location": {
+        "lat": 49.48,
+        "lng": 8.43,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 3,
+      "centrality": 0.38
+    },
+    {
+      "id": "supplier-panasonic",
+      "name": "Panasonic Energy Osaka",
+      "type": "supplier",
+      "location": {
+        "lat": 34.69,
+        "lng": 135.5,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.48
+    },
+    {
+      "id": "supplier-qualcomm",
+      "name": "Qualcomm San Diego",
+      "type": "supplier",
+      "location": {
+        "lat": 32.9,
+        "lng": -117.19,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "supplier-mediatek",
+      "name": "MediaTek Hsinchu",
+      "type": "supplier",
+      "location": {
+        "lat": 24.8,
+        "lng": 120.97,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "supplier-rare-earth",
+      "name": "Baotou Rare Earth",
+      "type": "supplier",
+      "location": {
+        "lat": 40.66,
+        "lng": 109.84,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.72
+    },
+    {
+      "id": "supplier-lithium-cl",
+      "name": "Atacama Lithium (SQM)",
+      "type": "supplier",
+      "location": {
+        "lat": -23.5,
+        "lng": -68.2,
+        "country": "Chile"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.65
+    },
+    {
+      "id": "supplier-copper-cl",
+      "name": "Escondida Copper",
+      "type": "supplier",
+      "location": {
+        "lat": -24.27,
+        "lng": -69.07,
+        "country": "Chile"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "supplier-tdk",
+      "name": "TDK Chikumagawa",
+      "type": "supplier",
+      "location": {
+        "lat": 36.43,
+        "lng": 138.44,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.48
+    },
+    {
+      "id": "supplier-alps",
+      "name": "Alps Electric Tokyo",
+      "type": "supplier",
+      "location": {
+        "lat": 35.69,
+        "lng": 139.75,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.46
+    },
+    {
+      "id": "supplier-valeo",
+      "name": "Valeo Paris",
+      "type": "supplier",
+      "location": {
+        "lat": 48.85,
+        "lng": 2.35,
+        "country": "France"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.44
+    },
+    {
+      "id": "supplier-continental",
+      "name": "Continental Hanover",
+      "type": "supplier",
+      "location": {
+        "lat": 52.38,
+        "lng": 9.7,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "supplier-denso",
+      "name": "Denso Aichi",
+      "type": "supplier",
+      "location": {
+        "lat": 35.18,
+        "lng": 137.01,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "supplier-autoliv",
+      "name": "Autoliv Vårgårda",
+      "type": "supplier",
+      "location": {
+        "lat": 58.04,
+        "lng": 12.81,
+        "country": "Sweden"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.45
+    },
+    {
+      "id": "supplier-aptiv",
+      "name": "Aptiv Troy MI",
+      "type": "supplier",
+      "location": {
+        "lat": 42.61,
+        "lng": -83.15,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.48
+    },
+    {
+      "id": "supplier-magna",
+      "name": "Magna Graz",
+      "type": "supplier",
+      "location": {
+        "lat": 47.07,
+        "lng": 15.44,
+        "country": "Austria"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "supplier-zf",
+      "name": "ZF Friedrichshafen",
+      "type": "supplier",
+      "location": {
+        "lat": 47.66,
+        "lng": 9.48,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    },
+    {
+      "id": "supplier-samsung-sdi",
+      "name": "Samsung SDI Giheung",
+      "type": "supplier",
+      "location": {
+        "lat": 37.4,
+        "lng": 127.12,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.56
+    },
+    {
+      "id": "supplier-onsemi",
+      "name": "onsemi Scottsdale",
+      "type": "supplier",
+      "location": {
+        "lat": 33.49,
+        "lng": -111.93,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.46
+    },
+    {
+      "id": "supplier-ti",
+      "name": "Texas Instruments Dallas",
+      "type": "supplier",
+      "location": {
+        "lat": 32.78,
+        "lng": -96.8,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.54
+    },
+    {
+      "id": "supplier-analog",
+      "name": "Analog Devices Wilmington",
+      "type": "supplier",
+      "location": {
+        "lat": 42.55,
+        "lng": -71.17,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.48
+    },
+    {
+      "id": "supplier-stmicro",
+      "name": "STMicro Geneva",
+      "type": "supplier",
+      "location": {
+        "lat": 46.2,
+        "lng": 6.14,
+        "country": "Switzerland"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.5
+    },
+    {
+      "id": "supplier-ams",
+      "name": "ams OSRAM Premstätten",
+      "type": "supplier",
+      "location": {
+        "lat": 47.07,
+        "lng": 15.4,
+        "country": "Austria"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.44
+    },
+    {
+      "id": "carrier-maersk",
+      "name": "Maersk Line",
+      "type": "carrier",
+      "location": {
+        "lat": 55.68,
+        "lng": 12.57,
+        "country": "Denmark"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.85
+    },
+    {
+      "id": "carrier-msc",
+      "name": "MSC Mediterranean",
+      "type": "carrier",
+      "location": {
+        "lat": 46.2,
+        "lng": 6.14,
+        "country": "Switzerland"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.75
+    },
+    {
+      "id": "carrier-cma",
+      "name": "CMA CGM Marseille",
+      "type": "carrier",
+      "location": {
+        "lat": 43.3,
+        "lng": 5.37,
+        "country": "France"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.78
+    },
+    {
+      "id": "carrier-hapag",
+      "name": "Hapag-Lloyd Hamburg",
+      "type": "carrier",
+      "location": {
+        "lat": 53.55,
+        "lng": 9.99,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.76
+    },
+    {
+      "id": "carrier-cosco",
+      "name": "COSCO Shipping",
+      "type": "carrier",
+      "location": {
+        "lat": 31.23,
+        "lng": 121.47,
+        "country": "China"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.78
+    },
+    {
+      "id": "carrier-evergreen",
+      "name": "Evergreen Marine",
+      "type": "carrier",
+      "location": {
+        "lat": 25.03,
+        "lng": 121.57,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "carrier-one",
+      "name": "Ocean Network Express",
+      "type": "carrier",
+      "location": {
+        "lat": 35.4,
+        "lng": 139.65,
+        "country": "Japan"
+      },
+      "current_risk": 0,
+      "tier": 1,
+      "centrality": 0.72
+    },
+    {
+      "id": "carrier-hmm",
+      "name": "HMM Seoul",
+      "type": "carrier",
+      "location": {
+        "lat": 37.57,
+        "lng": 126.98,
+        "country": "South Korea"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.65
+    },
+    {
+      "id": "carrier-zim",
+      "name": "ZIM Haifa",
+      "type": "carrier",
+      "location": {
+        "lat": 32.82,
+        "lng": 34.99,
+        "country": "Israel"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "carrier-yangming",
+      "name": "Yang Ming Kaohsiung",
+      "type": "carrier",
+      "location": {
+        "lat": 22.62,
+        "lng": 120.28,
+        "country": "Taiwan"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.56
+    },
+    {
+      "id": "carrier-dhl",
+      "name": "DHL Express",
+      "type": "carrier",
+      "location": {
+        "lat": 50.11,
+        "lng": 8.68,
+        "country": "Germany"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.6
+    },
+    {
+      "id": "carrier-fedex",
+      "name": "FedEx Memphis",
+      "type": "carrier",
+      "location": {
+        "lat": 35.05,
+        "lng": -89.98,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.55
+    },
+    {
+      "id": "carrier-ups",
+      "name": "UPS Worldport Louisville",
+      "type": "carrier",
+      "location": {
+        "lat": 38.17,
+        "lng": -85.74,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.58
+    },
+    {
+      "id": "carrier-amazon-air",
+      "name": "Amazon Air CVG",
+      "type": "carrier",
+      "location": {
+        "lat": 39.05,
+        "lng": -84.67,
+        "country": "USA"
+      },
+      "current_risk": 0,
+      "tier": 2,
+      "centrality": 0.52
+    }
   ],
   "edges": [
-    {"source": "factory-tsmc", "target": "port-shanghai", "weight": 0.85, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 12000000000},
-    {"source": "factory-tsmc", "target": "port-busan", "weight": 0.40, "lead_time_days": 4, "transport_mode": "sea", "annual_volume_usd": 3500000000},
-    {"source": "factory-samsung", "target": "port-busan", "weight": 0.90, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 8500000000},
-    {"source": "factory-foxconn", "target": "port-shanghai", "weight": 0.80, "lead_time_days": 5, "transport_mode": "road", "annual_volume_usd": 15000000000},
-    {"source": "factory-foxconn", "target": "port-shenzhen", "weight": 0.70, "lead_time_days": 8, "transport_mode": "road", "annual_volume_usd": 9000000000},
-
-    {"source": "port-shanghai", "target": "hub-malacca", "weight": 0.75, "lead_time_days": 7, "transport_mode": "sea", "annual_volume_usd": 45000000000},
-    {"source": "port-shenzhen", "target": "hub-malacca", "weight": 0.70, "lead_time_days": 5, "transport_mode": "sea", "annual_volume_usd": 30000000000},
-    {"source": "port-shenzhen", "target": "port-singapore", "weight": 0.65, "lead_time_days": 4, "transport_mode": "sea", "annual_volume_usd": 18000000000},
-    {"source": "hub-malacca", "target": "port-singapore", "weight": 0.90, "lead_time_days": 1, "transport_mode": "sea", "annual_volume_usd": 60000000000},
-    {"source": "port-singapore", "target": "hub-suez", "weight": 0.85, "lead_time_days": 12, "transport_mode": "sea", "annual_volume_usd": 35000000000},
-    {"source": "port-singapore", "target": "port-mumbai", "weight": 0.50, "lead_time_days": 6, "transport_mode": "sea", "annual_volume_usd": 8000000000},
-    {"source": "port-singapore", "target": "port-dubai", "weight": 0.60, "lead_time_days": 8, "transport_mode": "sea", "annual_volume_usd": 12000000000},
-
-    {"source": "hub-suez", "target": "port-rotterdam", "weight": 0.80, "lead_time_days": 8, "transport_mode": "sea", "annual_volume_usd": 40000000000},
-    {"source": "hub-suez", "target": "port-hamburg", "weight": 0.65, "lead_time_days": 10, "transport_mode": "sea", "annual_volume_usd": 22000000000},
-    {"source": "hub-suez", "target": "port-lehavre", "weight": 0.50, "lead_time_days": 9, "transport_mode": "sea", "annual_volume_usd": 12000000000},
-
-    {"source": "port-shanghai", "target": "port-la", "weight": 0.70, "lead_time_days": 14, "transport_mode": "sea", "annual_volume_usd": 28000000000},
-    {"source": "port-busan", "target": "port-la", "weight": 0.55, "lead_time_days": 12, "transport_mode": "sea", "annual_volume_usd": 15000000000},
-    {"source": "port-shanghai", "target": "port-busan", "weight": 0.45, "lead_time_days": 3, "transport_mode": "sea", "annual_volume_usd": 10000000000},
-
-    {"source": "port-la", "target": "warehouse-la", "weight": 0.90, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 20000000000},
-    {"source": "warehouse-la", "target": "warehouse-chicago", "weight": 0.65, "lead_time_days": 3, "transport_mode": "rail", "annual_volume_usd": 8000000000},
-    {"source": "port-rotterdam", "target": "warehouse-rotterdam", "weight": 0.85, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 18000000000},
-    {"source": "warehouse-rotterdam", "target": "warehouse-frankfurt", "weight": 0.70, "lead_time_days": 2, "transport_mode": "rail", "annual_volume_usd": 10000000000},
-    {"source": "port-rotterdam", "target": "warehouse-frankfurt", "weight": 0.60, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 7000000000},
-    {"source": "port-hamburg", "target": "warehouse-frankfurt", "weight": 0.55, "lead_time_days": 3, "transport_mode": "rail", "annual_volume_usd": 6000000000},
-
-    {"source": "port-dubai", "target": "warehouse-dubai", "weight": 0.85, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 9000000000},
-    {"source": "port-yokohama", "target": "warehouse-tokyo", "weight": 0.80, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 7000000000},
-    {"source": "port-singapore", "target": "warehouse-singapore", "weight": 0.85, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 11000000000},
-    {"source": "port-mumbai", "target": "warehouse-mumbai", "weight": 0.75, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 4000000000},
-
-    {"source": "supplier-catl", "target": "factory-tesla", "weight": 0.95, "lead_time_days": 4, "transport_mode": "road", "annual_volume_usd": 6000000000},
-    {"source": "supplier-catl", "target": "factory-byd", "weight": 0.85, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 5000000000},
-    {"source": "supplier-catl", "target": "port-shanghai", "weight": 0.60, "lead_time_days": 6, "transport_mode": "road", "annual_volume_usd": 3000000000},
-    {"source": "supplier-lg-chem", "target": "factory-samsung", "weight": 0.70, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 2500000000},
-    {"source": "supplier-lg-chem", "target": "factory-gigafactory-nv", "weight": 0.55, "lead_time_days": 25, "transport_mode": "sea", "annual_volume_usd": 1500000000},
-    {"source": "supplier-murata", "target": "factory-foxconn", "weight": 0.65, "lead_time_days": 5, "transport_mode": "sea", "annual_volume_usd": 2000000000},
-    {"source": "supplier-murata", "target": "factory-toyota", "weight": 0.50, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 1200000000},
-    {"source": "supplier-infineon", "target": "factory-bosch", "weight": 0.80, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 1800000000},
-    {"source": "supplier-infineon", "target": "factory-vw", "weight": 0.60, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 1000000000},
-    {"source": "supplier-sk-hynix", "target": "factory-samsung", "weight": 0.75, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 4000000000},
-    {"source": "supplier-sk-hynix", "target": "factory-foxconn", "weight": 0.50, "lead_time_days": 6, "transport_mode": "sea", "annual_volume_usd": 2500000000},
-    {"source": "supplier-nxp", "target": "factory-bosch", "weight": 0.55, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 800000000},
-    {"source": "supplier-basf", "target": "factory-bosch", "weight": 0.40, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 500000000},
-    {"source": "supplier-basf", "target": "factory-vw", "weight": 0.45, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 600000000},
-    {"source": "supplier-panasonic", "target": "factory-tesla", "weight": 0.60, "lead_time_days": 20, "transport_mode": "sea", "annual_volume_usd": 3000000000},
-    {"source": "supplier-panasonic", "target": "factory-gigafactory-nv", "weight": 0.75, "lead_time_days": 18, "transport_mode": "sea", "annual_volume_usd": 4500000000},
-
-    {"source": "factory-bosch", "target": "factory-vw", "weight": 0.80, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 5000000000},
-    {"source": "factory-bosch", "target": "port-hamburg", "weight": 0.55, "lead_time_days": 4, "transport_mode": "road", "annual_volume_usd": 2000000000},
-    {"source": "factory-toyota", "target": "port-yokohama", "weight": 0.85, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 7000000000},
-    {"source": "factory-byd", "target": "port-shenzhen", "weight": 0.80, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 4500000000},
-    {"source": "factory-tesla", "target": "port-shanghai", "weight": 0.75, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 6000000000},
-    {"source": "factory-vw", "target": "port-hamburg", "weight": 0.70, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 4000000000},
-    {"source": "factory-intel", "target": "port-la", "weight": 0.55, "lead_time_days": 5, "transport_mode": "road", "annual_volume_usd": 2500000000},
-
-    {"source": "carrier-maersk", "target": "port-shanghai", "weight": 0.70, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-maersk", "target": "port-rotterdam", "weight": 0.75, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-maersk", "target": "port-la", "weight": 0.60, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-cosco", "target": "port-shanghai", "weight": 0.85, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-cosco", "target": "port-singapore", "weight": 0.65, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-msc", "target": "port-rotterdam", "weight": 0.70, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-msc", "target": "hub-suez", "weight": 0.60, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-dhl", "target": "warehouse-frankfurt", "weight": 0.75, "lead_time_days": 0, "transport_mode": "air", "annual_volume_usd": 0},
-    {"source": "carrier-dhl", "target": "warehouse-singapore", "weight": 0.55, "lead_time_days": 0, "transport_mode": "air", "annual_volume_usd": 0},
-    {"source": "carrier-fedex", "target": "warehouse-memphis", "weight": 0.90, "lead_time_days": 0, "transport_mode": "air", "annual_volume_usd": 0},
-    {"source": "carrier-fedex", "target": "warehouse-la", "weight": 0.60, "lead_time_days": 0, "transport_mode": "air", "annual_volume_usd": 0},
-    {"source": "carrier-evergreen", "target": "port-shanghai", "weight": 0.55, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-    {"source": "carrier-evergreen", "target": "hub-suez", "weight": 0.50, "lead_time_days": 0, "transport_mode": "sea", "annual_volume_usd": 0},
-
-    {"source": "supplier-rare-earth", "target": "factory-tsmc", "weight": 0.70, "lead_time_days": 10, "transport_mode": "sea", "annual_volume_usd": 800000000},
-    {"source": "supplier-rare-earth", "target": "factory-samsung", "weight": 0.55, "lead_time_days": 8, "transport_mode": "sea", "annual_volume_usd": 500000000},
-    {"source": "supplier-lithium-cl", "target": "supplier-catl", "weight": 0.80, "lead_time_days": 30, "transport_mode": "sea", "annual_volume_usd": 2000000000},
-    {"source": "supplier-lithium-cl", "target": "supplier-lg-chem", "weight": 0.60, "lead_time_days": 28, "transport_mode": "sea", "annual_volume_usd": 1200000000},
-    {"source": "supplier-copper-cl", "target": "supplier-murata", "weight": 0.45, "lead_time_days": 25, "transport_mode": "sea", "annual_volume_usd": 600000000},
-    {"source": "supplier-copper-cl", "target": "supplier-infineon", "weight": 0.50, "lead_time_days": 22, "transport_mode": "sea", "annual_volume_usd": 700000000},
-
-    {"source": "supplier-qualcomm", "target": "factory-foxconn", "weight": 0.70, "lead_time_days": 15, "transport_mode": "air", "annual_volume_usd": 3000000000},
-    {"source": "supplier-mediatek", "target": "factory-foxconn", "weight": 0.55, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 1500000000},
-    {"source": "factory-foxconn", "target": "factory-apple-india", "weight": 0.40, "lead_time_days": 12, "transport_mode": "sea", "annual_volume_usd": 2000000000},
-    {"source": "factory-apple-india", "target": "port-mumbai", "weight": 0.65, "lead_time_days": 3, "transport_mode": "road", "annual_volume_usd": 1500000000},
-
-    {"source": "port-shenzhen", "target": "warehouse-shenzhen", "weight": 0.80, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 5000000000},
-    {"source": "warehouse-shenzhen", "target": "warehouse-hong-kong", "weight": 0.70, "lead_time_days": 1, "transport_mode": "road", "annual_volume_usd": 4000000000},
-    {"source": "warehouse-hong-kong", "target": "port-singapore", "weight": 0.55, "lead_time_days": 3, "transport_mode": "sea", "annual_volume_usd": 3000000000},
-
-    {"source": "port-la", "target": "hub-panama", "weight": 0.45, "lead_time_days": 5, "transport_mode": "sea", "annual_volume_usd": 8000000000},
-    {"source": "hub-panama", "target": "port-rotterdam", "weight": 0.50, "lead_time_days": 10, "transport_mode": "sea", "annual_volume_usd": 6000000000},
-
-    {"source": "factory-gigafactory-nv", "target": "warehouse-la", "weight": 0.65, "lead_time_days": 2, "transport_mode": "road", "annual_volume_usd": 3000000000},
-    {"source": "port-mumbai", "target": "port-dubai", "weight": 0.50, "lead_time_days": 3, "transport_mode": "sea", "annual_volume_usd": 2000000000},
-    {"source": "port-dubai", "target": "hub-suez", "weight": 0.60, "lead_time_days": 4, "transport_mode": "sea", "annual_volume_usd": 5000000000}
+    {
+      "source": "port-shanghai",
+      "target": "hub-malacca",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-shenzhen",
+      "target": "hub-malacca",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-ningbo",
+      "target": "hub-malacca",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "hub-malacca",
+      "target": "port-singapore",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-singapore",
+      "target": "hub-suez",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "hub-suez",
+      "target": "port-rotterdam",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "hub-suez",
+      "target": "port-piraeus",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-rotterdam",
+      "target": "port-antwerp",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-antwerp",
+      "target": "port-hamburg",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-la",
+      "target": "port-long-beach",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-la",
+      "target": "hub-panama",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "hub-panama",
+      "target": "port-santos",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-shanghai",
+      "target": "port-busan",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-busan",
+      "target": "port-yokohama",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-yokohama",
+      "target": "port-tokyo",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-mumbai",
+      "target": "port-dubai",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-dubai",
+      "target": "hub-suez",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-singapore",
+      "target": "port-mumbai",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-singapore",
+      "target": "port-colombo",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-qingdao",
+      "target": "port-tianjin",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-vancouver",
+      "target": "port-seattle",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-seattle",
+      "target": "port-oakland",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-savannah",
+      "target": "port-charleston",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-houston",
+      "target": "port-norfolk",
+      "weight": 0.72,
+      "lead_time_days": 6,
+      "transport_mode": "sea",
+      "annual_volume_usd": 25000000000
+    },
+    {
+      "source": "port-shanghai",
+      "target": "port-ningbo",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-ningbo",
+      "target": "port-qingdao",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-tianjin",
+      "target": "port-xiamen",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-xiamen",
+      "target": "port-shenzhen",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-oakland",
+      "target": "port-la",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-charleston",
+      "target": "port-norfolk",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-norfolk",
+      "target": "port-houston",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-hamburg",
+      "target": "port-bremerhaven",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-bremerhaven",
+      "target": "port-felixstowe",
+      "weight": 0.48,
+      "lead_time_days": 4,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "carrier-maersk",
+      "target": "port-shanghai",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-maersk",
+      "target": "port-xiamen",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-maersk",
+      "target": "port-ningbo",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-msc",
+      "target": "port-shenzhen",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-msc",
+      "target": "port-qingdao",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-msc",
+      "target": "port-felixstowe",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-msc",
+      "target": "port-lehavre",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cma",
+      "target": "port-ningbo",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cma",
+      "target": "port-singapore",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cma",
+      "target": "port-seattle",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cma",
+      "target": "port-vancouver",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hapag",
+      "target": "port-qingdao",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hapag",
+      "target": "port-antwerp",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hapag",
+      "target": "port-kaohsiung",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hapag",
+      "target": "hub-suez",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cosco",
+      "target": "port-tianjin",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cosco",
+      "target": "port-felixstowe",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cosco",
+      "target": "port-colombo",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-cosco",
+      "target": "port-rotterdam",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-evergreen",
+      "target": "port-xiamen",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-evergreen",
+      "target": "port-piraeus",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-evergreen",
+      "target": "port-ningbo",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-evergreen",
+      "target": "port-seattle",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-one",
+      "target": "port-singapore",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-one",
+      "target": "port-oakland",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-one",
+      "target": "port-antwerp",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-one",
+      "target": "port-chennai",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hmm",
+      "target": "port-tanjung-pelepas",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hmm",
+      "target": "port-charleston",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hmm",
+      "target": "port-la",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-hmm",
+      "target": "port-qingdao",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-zim",
+      "target": "port-rotterdam",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-zim",
+      "target": "port-vancouver",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-zim",
+      "target": "port-norfolk",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-zim",
+      "target": "port-barcelona",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-yangming",
+      "target": "port-antwerp",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-yangming",
+      "target": "port-yokohama",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-yangming",
+      "target": "port-chennai",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-yangming",
+      "target": "port-busan",
+      "weight": 0.67,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-dhl",
+      "target": "port-hamburg",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-dhl",
+      "target": "port-chennai",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-dhl",
+      "target": "hub-panama",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-dhl",
+      "target": "hub-malacca",
+      "weight": 0.55,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-fedex",
+      "target": "port-bremerhaven",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-fedex",
+      "target": "port-colombo",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-fedex",
+      "target": "port-singapore",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-fedex",
+      "target": "port-antwerp",
+      "weight": 0.5800000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-ups",
+      "target": "port-felixstowe",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-ups",
+      "target": "hub-malacca",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-ups",
+      "target": "port-lehavre",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-ups",
+      "target": "port-savannah",
+      "weight": 0.6100000000000001,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-amazon-air",
+      "target": "port-lehavre",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-amazon-air",
+      "target": "port-shenzhen",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-amazon-air",
+      "target": "port-savannah",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-amazon-air",
+      "target": "port-dubai",
+      "weight": 0.64,
+      "lead_time_days": 0,
+      "transport_mode": "sea",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-dhl",
+      "target": "warehouse-frankfurt",
+      "weight": 0.75,
+      "lead_time_days": 0,
+      "transport_mode": "air",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-dhl",
+      "target": "warehouse-singapore",
+      "weight": 0.6,
+      "lead_time_days": 0,
+      "transport_mode": "air",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-fedex",
+      "target": "warehouse-memphis",
+      "weight": 0.9,
+      "lead_time_days": 0,
+      "transport_mode": "air",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-fedex",
+      "target": "warehouse-la",
+      "weight": 0.62,
+      "lead_time_days": 0,
+      "transport_mode": "air",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-ups",
+      "target": "warehouse-chicago",
+      "weight": 0.7,
+      "lead_time_days": 0,
+      "transport_mode": "air",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "carrier-amazon-air",
+      "target": "warehouse-memphis",
+      "weight": 0.65,
+      "lead_time_days": 0,
+      "transport_mode": "air",
+      "annual_volume_usd": 0
+    },
+    {
+      "source": "supplier-catl",
+      "target": "factory-tesla",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-catl",
+      "target": "factory-byd",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-lg-chem",
+      "target": "factory-samsung",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-lg-chem",
+      "target": "factory-hyundai",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-sk-hynix",
+      "target": "factory-samsung",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-sk-hynix",
+      "target": "factory-kia",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-murata",
+      "target": "factory-foxconn",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-murata",
+      "target": "factory-toyota",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-infineon",
+      "target": "factory-bosch",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-infineon",
+      "target": "factory-vw",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-nxp",
+      "target": "factory-bosch",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-basf",
+      "target": "factory-vw",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-panasonic",
+      "target": "factory-tesla",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-qualcomm",
+      "target": "factory-foxconn",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-mediatek",
+      "target": "factory-compal",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-rare-earth",
+      "target": "factory-tsmc",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-rare-earth",
+      "target": "factory-samsung",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-tdk",
+      "target": "factory-honda",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-denso",
+      "target": "factory-toyota",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-zf",
+      "target": "factory-bmw",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-magna",
+      "target": "factory-stellantis",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-samsung-sdi",
+      "target": "factory-hyundai",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-ti",
+      "target": "factory-intel",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-onsemi",
+      "target": "factory-micron-boise",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-stmicro",
+      "target": "factory-stmicro",
+      "weight": 0.65,
+      "lead_time_days": 4,
+      "transport_mode": "road",
+      "annual_volume_usd": 1500000000
+    },
+    {
+      "source": "supplier-catl",
+      "target": "factory-tsmc",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-sk-hynix",
+      "target": "factory-foxconn",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-murata",
+      "target": "factory-luxshare",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-infineon",
+      "target": "factory-goertek",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-basf",
+      "target": "factory-toyota",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-panasonic",
+      "target": "factory-honda",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-qualcomm",
+      "target": "factory-intel",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-mediatek",
+      "target": "factory-byd",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-rare-earth",
+      "target": "factory-vw",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-lithium-cl",
+      "target": "factory-bmw",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-copper-cl",
+      "target": "factory-rivian",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-tdk",
+      "target": "factory-tesla",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-alps",
+      "target": "factory-gigafactory-nv",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-valeo",
+      "target": "factory-stellantis",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-continental",
+      "target": "factory-renault",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-denso",
+      "target": "factory-nissan",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-autoliv",
+      "target": "factory-hyundai",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-aptiv",
+      "target": "factory-kia",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-magna",
+      "target": "factory-apple-india",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-zf",
+      "target": "factory-stmicro",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-samsung-sdi",
+      "target": "factory-nxp-austin",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-ti",
+      "target": "factory-amkor",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-analog",
+      "target": "factory-delta",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-stmicro",
+      "target": "factory-compal",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "supplier-ams",
+      "target": "factory-wistron",
+      "weight": 0.52,
+      "lead_time_days": 5,
+      "transport_mode": "road",
+      "annual_volume_usd": 800000000
+    },
+    {
+      "source": "factory-tsmc",
+      "target": "port-kaohsiung",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-samsung",
+      "target": "port-busan",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-foxconn",
+      "target": "port-shanghai",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-foxconn",
+      "target": "port-shenzhen",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-byd",
+      "target": "port-shenzhen",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-tesla",
+      "target": "port-shanghai",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-bosch",
+      "target": "port-hamburg",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-vw",
+      "target": "port-hamburg",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-toyota",
+      "target": "port-yokohama",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-intel",
+      "target": "port-la",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-bmw",
+      "target": "port-charleston",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-apple-india",
+      "target": "port-mumbai",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-gigafactory-nv",
+      "target": "port-oakland",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-hyundai",
+      "target": "port-busan",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-nissan",
+      "target": "port-felixstowe",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-stmicro",
+      "target": "port-barcelona",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-wistron",
+      "target": "port-shanghai",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-compal",
+      "target": "port-shanghai",
+      "weight": 0.78,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "factory-tsmc",
+      "target": "port-shanghai",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-samsung",
+      "target": "port-shenzhen",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-foxconn",
+      "target": "port-ningbo",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-luxshare",
+      "target": "port-qingdao",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-goertek",
+      "target": "port-tianjin",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-bosch",
+      "target": "port-xiamen",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-toyota",
+      "target": "port-singapore",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-honda",
+      "target": "port-tanjung-pelepas",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-intel",
+      "target": "port-rotterdam",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-byd",
+      "target": "port-antwerp",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-bmw",
+      "target": "port-bremerhaven",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-rivian",
+      "target": "port-felixstowe",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-tesla",
+      "target": "port-lehavre",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-gigafactory-nv",
+      "target": "port-barcelona",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-stellantis",
+      "target": "port-piraeus",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-renault",
+      "target": "port-la",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-nissan",
+      "target": "port-long-beach",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-hyundai",
+      "target": "port-oakland",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-kia",
+      "target": "port-seattle",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-apple-india",
+      "target": "port-savannah",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-stmicro",
+      "target": "port-charleston",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-nxp-austin",
+      "target": "port-houston",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-micron-boise",
+      "target": "port-norfolk",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-amkor",
+      "target": "port-vancouver",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-delta",
+      "target": "port-busan",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-compal",
+      "target": "port-kaohsiung",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-wistron",
+      "target": "port-yokohama",
+      "weight": 0.62,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "port-la",
+      "target": "warehouse-la",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-long-beach",
+      "target": "warehouse-la",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-rotterdam",
+      "target": "warehouse-rotterdam",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-antwerp",
+      "target": "warehouse-antwerp-dc",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-hamburg",
+      "target": "warehouse-frankfurt",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-dubai",
+      "target": "warehouse-dubai",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-yokohama",
+      "target": "warehouse-tokyo",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-tokyo",
+      "target": "warehouse-tokyo",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-singapore",
+      "target": "warehouse-singapore",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-shenzhen",
+      "target": "warehouse-shenzhen",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-mumbai",
+      "target": "warehouse-mumbai",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-mumbai",
+      "target": "warehouse-bangalore",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-vancouver",
+      "target": "warehouse-toronto",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-seattle",
+      "target": "warehouse-toronto",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-felixstowe",
+      "target": "warehouse-dublin",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-barcelona",
+      "target": "warehouse-mexico",
+      "weight": 0.82,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 8000000000
+    },
+    {
+      "source": "port-shanghai",
+      "target": "warehouse-la",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-shenzhen",
+      "target": "warehouse-chicago",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-ningbo",
+      "target": "warehouse-memphis",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-qingdao",
+      "target": "warehouse-frankfurt",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-tianjin",
+      "target": "warehouse-rotterdam",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-xiamen",
+      "target": "warehouse-antwerp-dc",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-singapore",
+      "target": "warehouse-dubai",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-tanjung-pelepas",
+      "target": "warehouse-tokyo",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-rotterdam",
+      "target": "warehouse-osaka",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-antwerp",
+      "target": "warehouse-singapore",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-hamburg",
+      "target": "warehouse-shenzhen",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-bremerhaven",
+      "target": "warehouse-hong-kong",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-felixstowe",
+      "target": "warehouse-mumbai",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-lehavre",
+      "target": "warehouse-bangalore",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-piraeus",
+      "target": "warehouse-sao-paulo",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-la",
+      "target": "warehouse-sydney",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-long-beach",
+      "target": "warehouse-melbourne",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-oakland",
+      "target": "warehouse-johannesburg",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-seattle",
+      "target": "warehouse-dublin",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-savannah",
+      "target": "warehouse-warsaw",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-charleston",
+      "target": "warehouse-prague",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-houston",
+      "target": "warehouse-stockholm",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-norfolk",
+      "target": "warehouse-toronto",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-vancouver",
+      "target": "warehouse-montreal",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-busan",
+      "target": "warehouse-seoul",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-kaohsiung",
+      "target": "warehouse-hcmc",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-yokohama",
+      "target": "warehouse-jakarta",
+      "weight": 0.58,
+      "lead_time_days": 3,
+      "transport_mode": "road",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "warehouse-la",
+      "target": "warehouse-chicago",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-chicago",
+      "target": "warehouse-memphis",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-frankfurt",
+      "target": "warehouse-warsaw",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-rotterdam",
+      "target": "warehouse-antwerp-dc",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-shenzhen",
+      "target": "warehouse-hong-kong",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-hong-kong",
+      "target": "warehouse-singapore",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-toronto",
+      "target": "warehouse-montreal",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "warehouse-stockholm",
+      "target": "warehouse-osaka",
+      "weight": 0.55,
+      "lead_time_days": 4,
+      "transport_mode": "rail",
+      "annual_volume_usd": 4000000000
+    },
+    {
+      "source": "factory-foxconn",
+      "target": "factory-apple-india",
+      "weight": 0.42,
+      "lead_time_days": 12,
+      "transport_mode": "sea",
+      "annual_volume_usd": 2000000000
+    },
+    {
+      "source": "factory-bosch",
+      "target": "factory-vw",
+      "weight": 0.8,
+      "lead_time_days": 2,
+      "transport_mode": "road",
+      "annual_volume_usd": 5000000000
+    },
+    {
+      "source": "port-qingdao",
+      "target": "port-busan",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-tianjin",
+      "target": "port-shanghai",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-xiamen",
+      "target": "port-kaohsiung",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-jeddah",
+      "target": "port-dubai",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-colombo",
+      "target": "hub-malacca",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-chennai",
+      "target": "port-colombo",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-piraeus",
+      "target": "port-barcelona",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-lehavre",
+      "target": "port-felixstowe",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-oakland",
+      "target": "port-long-beach",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-norfolk",
+      "target": "port-savannah",
+      "weight": 0.55,
+      "lead_time_days": 5,
+      "transport_mode": "sea",
+      "annual_volume_usd": 6000000000
+    },
+    {
+      "source": "port-shanghai",
+      "target": "port-bremerhaven",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-tianjin",
+      "target": "port-piraeus",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-rotterdam",
+      "target": "port-seattle",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-felixstowe",
+      "target": "port-norfolk",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-la",
+      "target": "port-yokohama",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-savannah",
+      "target": "port-dubai",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-vancouver",
+      "target": "hub-suez",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-tokyo",
+      "target": "port-shenzhen",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "port-jeddah",
+      "target": "port-xiamen",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "hub-malacca",
+      "target": "port-antwerp",
+      "weight": 0.42,
+      "lead_time_days": 8,
+      "transport_mode": "sea",
+      "annual_volume_usd": 3000000000
+    },
+    {
+      "source": "supplier-catl",
+      "target": "port-qingdao",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-lg-chem",
+      "target": "port-rotterdam",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-sk-hynix",
+      "target": "port-lehavre",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-murata",
+      "target": "port-oakland",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-infineon",
+      "target": "port-norfolk",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-nxp",
+      "target": "port-tokyo",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-basf",
+      "target": "port-colombo",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-panasonic",
+      "target": "port-shanghai",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-qualcomm",
+      "target": "port-xiamen",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-mediatek",
+      "target": "port-hamburg",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-rare-earth",
+      "target": "port-piraeus",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-lithium-cl",
+      "target": "port-savannah",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-copper-cl",
+      "target": "port-busan",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-tdk",
+      "target": "port-chennai",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-alps",
+      "target": "hub-suez",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-valeo",
+      "target": "port-ningbo",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-continental",
+      "target": "port-tanjung-pelepas",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-denso",
+      "target": "port-felixstowe",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-autoliv",
+      "target": "port-long-beach",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    },
+    {
+      "source": "supplier-aptiv",
+      "target": "port-houston",
+      "weight": 0.45,
+      "lead_time_days": 14,
+      "transport_mode": "sea",
+      "annual_volume_usd": 900000000
+    }
   ]
 }

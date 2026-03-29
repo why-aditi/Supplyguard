@@ -66,6 +66,18 @@ function edgeKey(d: GraphEdge): string {
   return `${sId}->${tId}`;
 }
 
+/** Keys for both (s,t) and (t,s) so LLM/UI picks match directed graph edges. */
+function buildRecommendedEdgeKeySet(
+  pairs: Array<{ source: string; target: string }>
+): Set<string> {
+  const set = new Set<string>();
+  for (const e of pairs) {
+    set.add(`${e.source}->${e.target}`);
+    set.add(`${e.target}->${e.source}`);
+  }
+  return set;
+}
+
 /** Tip at origin, opens along +x — scaled in map units with stroke (see transformForMidArrow). */
 const EDGE_ARROW_PATH = 'M0,0L10,-4L10,4Z';
 
@@ -192,9 +204,7 @@ export default function SupplyMap() {
     const svg = d3.select(svgRef.current);
     const scores = riskScoresRef.current;
     const getR = (id: string) => scores[id] ?? 0;
-    const recommendedSet = new Set(
-      recommendedEdgesRef.current.map((e) => `${e.source}->${e.target}`)
-    );
+    const recommendedSet = buildRecommendedEdgeKeySet(recommendedEdgesRef.current);
 
     svg.selectAll<SVGGElement, GraphNode>('.nodes g').each(function (this: SVGGElement, d: GraphNode) {
       const group = d3.select(this);
@@ -252,7 +262,13 @@ export default function SupplyMap() {
           .attr('stroke-opacity', sourceRisk > 0.3 || targetRisk > 0.3 ? 0.7 : 0.4)
           .attr('stroke-width', baseW / kz);
       } else {
-        line.transition().duration(800).ease(d3.easeCubicInOut).attr('stroke-width', baseW / kz);
+        line
+          .transition()
+          .duration(800)
+          .ease(d3.easeCubicInOut)
+          .attr('stroke', '#10B981')
+          .attr('stroke-opacity', 0.95)
+          .attr('stroke-width', baseW / kz);
       }
     });
 
@@ -481,16 +497,23 @@ export default function SupplyMap() {
 
         const simEdges: GraphEdge[] = edges.map((e) => ({ ...e }));
 
-        const recommendedSetInitial = new Set(
-          recommendedEdgesRef.current.map((e) => `${e.source}->${e.target}`)
-        );
+        const recommendedSetInitial = buildRecommendedEdgeKeySet(recommendedEdgesRef.current);
 
         const edgeGroup = zoomGroup.append('g').attr('class', 'edges');
         edgeGroup
           .selectAll<SVGLineElement, GraphEdge>('line')
           .data(simEdges)
           .join('line')
-          .attr('stroke', '#374151')
+          .attr('stroke', (d) => {
+            const sId = typeof d.source === 'string' ? d.source : d.source.id;
+            const tId = typeof d.target === 'string' ? d.target : d.target.id;
+            return recommendedSetInitial.has(`${sId}->${tId}`) ? '#10B981' : '#374151';
+          })
+          .attr('stroke-opacity', (d) => {
+            const sId = typeof d.source === 'string' ? d.source : d.source.id;
+            const tId = typeof d.target === 'string' ? d.target : d.target.id;
+            return recommendedSetInitial.has(`${sId}->${tId}`) ? 0.95 : 0.4;
+          })
           .attr('stroke-width', (d) => {
             const sId = typeof d.source === 'string' ? d.source : d.source.id;
             const tId = typeof d.target === 'string' ? d.target : d.target.id;
@@ -500,7 +523,6 @@ export default function SupplyMap() {
               baseEdgeStrokeWidthMapUnits(d, getR, isRec) / zoomKRef.current
             );
           })
-          .attr('stroke-opacity', 0.4)
           .attr('x1', (d) => edgeLineEndpoints(d, zoomKRef.current).x1)
           .attr('y1', (d) => edgeLineEndpoints(d, zoomKRef.current).y1)
           .attr('x2', (d) => edgeLineEndpoints(d, zoomKRef.current).x2)
@@ -576,9 +598,7 @@ export default function SupplyMap() {
 
         syncEdgeAndMarkerZoom = (k: number) => {
           const getR = (id: string) => riskScoresRef.current[id] ?? 0;
-          const recSet = new Set(
-            recommendedEdgesRef.current.map((e) => `${e.source}->${e.target}`)
-          );
+          const recSet = buildRecommendedEdgeKeySet(recommendedEdgesRef.current);
           edgeGroup.selectAll<SVGLineElement, GraphEdge>('line').each(function (d) {
             const sId = typeof d.source === 'string' ? d.source : d.source.id;
             const tId = typeof d.target === 'string' ? d.target : d.target.id;
