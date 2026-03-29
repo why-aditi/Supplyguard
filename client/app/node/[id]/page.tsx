@@ -9,6 +9,15 @@ import { NODE_TYPE_CONFIG } from '@/lib/types';
 import type { GraphNode, GraphEdge } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
 import { inter } from '@/lib/fonts';
+import {
+  backLink,
+  dashboardContent,
+  dashboardHeader,
+  dashboardMain,
+  dashboardRoot,
+  glassPanel,
+  nodeDetailPage,
+} from '@/lib/uiClasses';
 
 export default function NodeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -19,7 +28,6 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
   const node = nodes.find((n) => n.id === id);
   const risk = riskScores[id] ?? node?.current_risk ?? 0;
 
-  // Find connections
   const { upstream, downstream, neighborNodes, neighborEdges } = useMemo(() => {
     const up = edges
       .filter((e) => {
@@ -54,7 +62,6 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
     return { upstream: up, downstream: down, neighborNodes: nNodes, neighborEdges: nEdges };
   }, [id, nodes, edges]);
 
-  // Mini D3 graph
   useEffect(() => {
     if (!miniGraphRef.current || !containerRef.current || neighborNodes.length === 0) return;
 
@@ -63,10 +70,7 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
 
     d3.select(miniGraphRef.current).selectAll('*').remove();
 
-    const svg = d3
-      .select(miniGraphRef.current)
-      .attr('width', width)
-      .attr('height', height);
+    const svg = d3.select(miniGraphRef.current).attr('width', width).attr('height', height);
 
     const defs = svg.append('defs');
     const glowFilter = defs.append('filter').attr('id', 'mini-glow');
@@ -112,7 +116,7 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
 
     nodeGroups
       .append('text')
-      .text((d) => d.name.length > 16 ? d.name.slice(0, 14) + '…' : d.name)
+      .text((d) => (d.name.length > 16 ? d.name.slice(0, 14) + '…' : d.name))
       .attr('dy', (d) => (d.id === id ? 30 : centralityToRadius(d.centrality) + 12))
       .attr('text-anchor', 'middle')
       .attr('fill', (d) => (d.id === id ? '#F9FAFB' : '#9CA3AF'))
@@ -142,19 +146,23 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
         nodeGroups.attr('transform', (d) => `translate(${d.x ?? 0},${d.y ?? 0})`);
       });
 
-    return () => { simulation.stop(); };
+    return () => {
+      simulation.stop();
+    };
   }, [id, neighborNodes, neighborEdges, riskScores]);
 
   if (!node) {
     return (
-      <div className="dashboard">
-        <div className="dashboard-content">
+      <div className={dashboardRoot}>
+        <div className={dashboardContent}>
           <Sidebar />
-          <main className="dashboard-main">
-            <div className="node-detail-page">
-              <Link href="/" className="back-link">← Back to Map</Link>
-              <h2>Node not found</h2>
-              <p style={{ color: '#9CA3AF' }}>No node with ID &quot;{id}&quot; exists in the graph.</p>
+          <main className={dashboardMain}>
+            <div className={nodeDetailPage}>
+              <Link href="/" className={backLink}>
+                ← Back to Map
+              </Link>
+              <h2 className="text-xl font-bold">Node not found</h2>
+              <p className="mt-2 text-slate-400">No node with ID &quot;{id}&quot; exists in the graph.</p>
             </div>
           </main>
         </div>
@@ -165,31 +173,39 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
   const riskPercent = Math.round(risk * 100);
   const typeConfig = NODE_TYPE_CONFIG[node.type];
   const circumference = 2 * Math.PI * 56;
-  const dashoffset = circumference - (risk * circumference);
+  const dashoffset = circumference - risk * circumference;
 
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
-        <div className="header-brand">
-          <div className="brand-logo">
-            <span className="logo-icon">🛡️</span>
-            <h1>SupplyGuard AI</h1>
+    <div className={dashboardRoot}>
+      <header className={dashboardHeader}>
+        <div className="flex items-center gap-4">
+          <span className="text-2xl">🛡️</span>
+          <div>
+            <h1 className="text-lg font-semibold tracking-tight">SupplyGuard AI</h1>
+            <span className="text-sm text-slate-400">Node Detail</span>
           </div>
-          <span className="header-subtitle">Node Detail</span>
         </div>
       </header>
-      <div className="dashboard-content">
+      <div className={dashboardContent}>
         <Sidebar />
-        <main className="dashboard-main">
-          <div className="node-detail-page">
-            <Link href="/" className="back-link">← Back to Map</Link>
+        <main className={dashboardMain}>
+          <div className={nodeDetailPage}>
+            <Link href="/" className={backLink}>
+              ← Back to Map
+            </Link>
 
-            <div className="node-detail-header">
-              <div className="node-detail-icon">{typeConfig?.icon ?? '●'}</div>
+            <div className="mb-8 flex items-center gap-4">
+              <div
+                className={`flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 text-4xl ${glassPanel}`}
+              >
+                {typeConfig?.icon ?? '●'}
+              </div>
               <div>
-                <div className="node-detail-title">{node.name}</div>
-                <div className="node-detail-subtitle">
-                  <span className="node-detail-badge">{node.type}</span>
+                <div className="text-2xl font-bold tracking-tight">{node.name}</div>
+                <div className="mt-1 flex flex-wrap gap-3 text-sm text-slate-400">
+                  <span className="rounded bg-blue-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-400">
+                    {node.type}
+                  </span>
                   <span>Tier {node.tier}</span>
                   {node.location && <span>{node.location.country}</span>}
                   <span>Centrality: {node.centrality.toFixed(2)}</span>
@@ -197,44 +213,54 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            <div className="node-detail-grid">
-              <div className="node-detail-sidebar">
-                {/* Risk Gauge */}
-                <div className="risk-gauge-card">
-                  <svg className="risk-gauge-svg" viewBox="0 0 128 128">
-                    <circle className="risk-gauge-track" cx="64" cy="64" r="56" />
+            <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+              <div className="flex flex-col gap-4">
+                <div className={`rounded-2xl border border-white/10 p-6 text-center ${glassPanel}`}>
+                  <svg className="mx-auto mb-3 h-40 w-40" viewBox="0 0 128 128">
+                    <circle className="fill-none stroke-slate-600/30" cx="64" cy="64" r="56" strokeWidth="12" />
                     <circle
-                      className="risk-gauge-fill"
+                      className="fill-none stroke-linecap-round transition-[stroke-dashoffset,stroke] duration-500"
                       cx="64"
                       cy="64"
                       r="56"
                       stroke={riskToColor(risk)}
+                      strokeWidth="12"
                       strokeDasharray={circumference}
                       strokeDashoffset={dashoffset}
                       transform="rotate(-90 64 64)"
                     />
-                    <text className="risk-gauge-label" x="64" y="60" textAnchor="middle">
+                    <text className="fill-slate-50 text-[32px] font-bold" x="64" y="60" textAnchor="middle">
                       {riskPercent}%
                     </text>
-                    <text className="risk-gauge-sublabel" x="64" y="78" textAnchor="middle">
+                    <text
+                      className="fill-slate-500 text-[11px] font-medium uppercase tracking-wider"
+                      x="64"
+                      y="78"
+                      textAnchor="middle"
+                    >
                       Risk Score
                     </text>
                   </svg>
                 </div>
 
-                {/* Upstream */}
-                <div className="connections-card">
-                  <h3>⬆ Upstream ({upstream.length})</h3>
+                <div className={`rounded-2xl border border-white/10 p-4 ${glassPanel}`}>
+                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+                    ⬆ Upstream ({upstream.length})
+                  </h3>
                   {upstream.length === 0 ? (
-                    <p style={{ color: '#6B7280', fontSize: 12 }}>No upstream connections</p>
+                    <p className="text-xs text-slate-500">No upstream connections</p>
                   ) : (
                     upstream.map((c) => (
-                      <Link href={`/node/${c.id}`} key={c.id} className="connection-item">
-                        <span className="connection-name">
+                      <Link
+                        href={`/node/${c.id}`}
+                        key={c.id}
+                        className="mb-1 flex items-center justify-between rounded px-3 py-2 transition-colors hover:bg-white/5"
+                      >
+                        <span className="text-sm text-slate-300">
                           {NODE_TYPE_CONFIG[c.node!.type]?.icon} {c.node!.name}
                         </span>
                         <span
-                          className="connection-risk"
+                          className="rounded-full px-2 py-0.5 text-xs font-semibold"
                           style={{
                             background: `${riskToColor(riskScores[c.id] ?? 0)}22`,
                             color: riskToColor(riskScores[c.id] ?? 0),
@@ -247,19 +273,24 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
                   )}
                 </div>
 
-                {/* Downstream */}
-                <div className="connections-card">
-                  <h3>⬇ Downstream ({downstream.length})</h3>
+                <div className={`rounded-2xl border border-white/10 p-4 ${glassPanel}`}>
+                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+                    ⬇ Downstream ({downstream.length})
+                  </h3>
                   {downstream.length === 0 ? (
-                    <p style={{ color: '#6B7280', fontSize: 12 }}>No downstream connections</p>
+                    <p className="text-xs text-slate-500">No downstream connections</p>
                   ) : (
                     downstream.map((c) => (
-                      <Link href={`/node/${c.id}`} key={c.id} className="connection-item">
-                        <span className="connection-name">
+                      <Link
+                        href={`/node/${c.id}`}
+                        key={c.id}
+                        className="mb-1 flex items-center justify-between rounded px-3 py-2 transition-colors hover:bg-white/5"
+                      >
+                        <span className="text-sm text-slate-300">
                           {NODE_TYPE_CONFIG[c.node!.type]?.icon} {c.node!.name}
                         </span>
                         <span
-                          className="connection-risk"
+                          className="rounded-full px-2 py-0.5 text-xs font-semibold"
                           style={{
                             background: `${riskToColor(riskScores[c.id] ?? 0)}22`,
                             color: riskToColor(riskScores[c.id] ?? 0),
@@ -273,9 +304,11 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
                 </div>
               </div>
 
-              {/* Mini Graph */}
-              <div ref={containerRef} className="mini-graph-container">
-                <svg ref={miniGraphRef} />
+              <div
+                ref={containerRef}
+                className={`relative min-h-[400px] overflow-hidden rounded-2xl border border-white/10 ${glassPanel}`}
+              >
+                <svg ref={miniGraphRef} className="h-full w-full" />
               </div>
             </div>
           </div>

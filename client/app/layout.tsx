@@ -18,9 +18,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${chakraPetch.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${chakraPetch.variable} ${jetbrainsMono.variable} h-full`}
     >
-      <body>
+      <body
+        className="min-h-full overflow-x-hidden overflow-y-hidden bg-slate-950 font-sans text-slate-50 antialiased [background-image:radial-gradient(at_0%_0%,rgba(6,182,212,0.05)_0px,transparent_50%),radial-gradient(at_100%_100%,rgba(99,102,241,0.05)_0px,transparent_50%)] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-950 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-700"
+      >
         <AppShell>{children}</AppShell>
       </body>
     </html>

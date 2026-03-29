@@ -7,67 +7,76 @@ import RiskScoreCard from '@/components/RiskScoreCard';
 import RecommendationDrawer from '@/components/RecommendationDrawer';
 import Sidebar from '@/components/Sidebar';
 import SimulateControls from '@/components/SimulateControls';
+import {
+  missionControl,
+  mcRowTop,
+  mcRowCenter,
+  mcSidebarSlot,
+  mcMapViewport,
+  mapInnerContainer,
+  mapOverlayVignette,
+  floatingHeaderWithMetrics,
+  headerActionsShrink,
+  modalOverlay,
+  modalContent,
+  modalCloseBtn,
+  btnSimulateTrigger,
+  glassPanel,
+} from '@/lib/uiClasses';
 
 export default function DashboardPage() {
   const { nodes, wsConnected } = useSupplyGuardStore();
   const [isSimulateModalOpen, setIsSimulateModalOpen] = useState(false);
 
   return (
-    <div className="dashboard-mission-control">
-      {/* 1. Header & Alerts Row */}
-      <div className="mc-row-top">
-        <header className="floating-header floating-header--with-metrics glass-panel">
-          <div className="header-brand">
-            <div className="brand-logo">
+    <div className={missionControl}>
+      <div className={mcRowTop}>
+        <header className={`${floatingHeaderWithMetrics} items-center`}>
+          <div className="min-w-0">
+            <div>
               <h1 className="font-tech text-cyan-400">SUPPLYGUARD AI</h1>
             </div>
           </div>
 
           <RiskScoreCard compact />
 
-          <div className="flex items-center gap-6 header-actions-shrink">
-            {/* Simulate Trigger Button */}
-            <button
-              className="btn-simulate-trigger"
-              onClick={() => setIsSimulateModalOpen(true)}
-            >
+          <div className={`${headerActionsShrink} flex items-center gap-3 sm:gap-6`}>
+            <button type="button" className={btnSimulateTrigger} onClick={() => setIsSimulateModalOpen(true)}>
               <span className="mr-1">🎮</span> SIMULATE
             </button>
 
-            <div className="header-status font-mono">
-              <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
-              <span className="status-text">{wsConnected ? 'LIVE ' : 'OFFLINE '}</span>
-              <span className="header-node-count">{nodes.length} NODES</span>
+            <div className="flex items-center gap-2 font-mono">
+              <div
+                className={`h-2 w-2 shrink-0 rounded-full ${
+                  wsConnected ? 'bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.65)]' : 'bg-slate-500'
+                }`}
+              />
+              <span>{wsConnected ? 'LIVE ' : 'OFFLINE '}</span>
+              <span className="opacity-80">{nodes.length} NODES</span>
             </div>
           </div>
         </header>
       </div>
 
-      {/* 2. Primary Command Center (Sidebar + Boxed Map) */}
-      <div className="mc-row-center">
-        <aside className="mc-sidebar-slot">
+      <div className={mcRowCenter}>
+        <aside className={mcSidebarSlot}>
           <Sidebar />
         </aside>
 
-        <main className="mc-map-viewport glass-panel">
-          <div className="map-inner-container">
+        <main className={`${mcMapViewport} ${glassPanel}`}>
+          <div className={mapInnerContainer}>
             <SupplyMap />
           </div>
-          <div className="map-overlay-vignette" />
+          <div className={mapOverlayVignette} />
         </main>
       </div>
 
-      {/* 3. Overlays */}
       <RecommendationDrawer />
 
-      {/* 4. Simulation Modal */}
       {isSimulateModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsSimulateModalOpen(false)}>
-          <div className="modal-content glass-panel" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="modal-close-btn"
-              onClick={() => setIsSimulateModalOpen(false)}
-            >
+        <div className={modalOverlay} onClick={() => setIsSimulateModalOpen(false)} role="presentation">
+          <div className={modalContent} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <button type="button" className={modalCloseBtn} onClick={() => setIsSimulateModalOpen(false)} aria-label="Close">
               ✕
             </button>
             <SimulateControls onSimulateExecuted={() => setIsSimulateModalOpen(false)} />
@@ -77,6 +86,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-
-

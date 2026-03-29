@@ -98,12 +98,12 @@ const ADMIN1_K0 = 1.35;
 /** At and above this scale, admin-1 boundaries are fully visible. */
 const ADMIN1_K1 = 3.4;
 
-/** Matches DisruptionBanner feed source badges. */
-const FEED_SOURCE_BADGE: Record<string, { icon: string; label: string; className: string }> = {
-  aisstream: { icon: '📡', label: 'AIS', className: 'ais' },
-  ais: { icon: '📡', label: 'AIS', className: 'ais' },
-  rss: { icon: '📰', label: 'RSS', className: 'rss' },
-  simulated: { icon: '🎮', label: 'SIM', className: 'simulated' },
+/** Matches DisruptionBanner feed source badges (Tailwind-only). */
+const FEED_SOURCE_BADGE: Record<string, { icon: string; label: string; badgeClass: string }> = {
+  aisstream: { icon: '📡', label: 'AIS', badgeClass: 'bg-blue-500/15 text-blue-400' },
+  ais: { icon: '📡', label: 'AIS', badgeClass: 'bg-blue-500/15 text-blue-400' },
+  rss: { icon: '📰', label: 'RSS', badgeClass: 'bg-amber-500/15 text-amber-400' },
+  simulated: { icon: '🎮', label: 'SIM', badgeClass: 'bg-violet-500/15 text-violet-400' },
 };
 
 function admin1LayerOpacity(k: number): number {
@@ -677,26 +677,21 @@ export default function SupplyMap() {
   }, []);
 
   return (
-    <div ref={containerRef} className="supply-map-container">
+    <div
+      ref={containerRef}
+      className="relative h-full w-full bg-[radial-gradient(ellipse_at_center,#0f172a_0%,#020617_100%)] [&_svg]:h-full [&_svg]:w-full"
+    >
       <div
-        className="map-ais-feed"
+        className="pointer-events-none absolute bottom-4 left-4 z-[4] rounded-[10px] border border-cyan-500/20 bg-gradient-to-br from-slate-800/95 to-slate-900/95 px-3 py-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.45),inset_0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur-md"
         aria-live="polite"
-        style={{
-          position: 'absolute',
-          bottom: 16,
-          left: 16,
-          right: 'auto',
-          top: 'auto',
-          zIndex: 4,
-        }}
       >
-        <div className="map-ais-feed-row">
+        <div className="mb-1 flex items-center gap-2">
           <span
-            className={`map-ais-dot ${wsConnected ? 'map-ais-dot--live' : ''}`}
+            className={`h-1.5 w-1.5 shrink-0 rounded-full ${wsConnected ? 'bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.65)]' : 'bg-slate-500/60'}`}
             aria-hidden
           />
           <span
-            className={`disruption-source-badge font-tech ${sourceBadge.className}`}
+            className={`inline-flex items-center gap-1 rounded px-2 py-0.5 font-tech text-[10px] font-bold uppercase tracking-wide ${sourceBadge.badgeClass}`}
           >
             {sourceBadge.icon} {sourceBadge.label.toUpperCase()}
           </span>
@@ -705,7 +700,7 @@ export default function SupplyMap() {
           </span>
         </div>
         {latestIntel ? (
-          <p className="map-ais-feed-line font-mono text-[10px] leading-snug text-slate-300 mt-1 max-w-[min(92vw,420px)]">
+          <p className="mt-1 max-w-[min(92vw,420px)] font-mono text-[10px] leading-snug text-slate-300">
             <span className="text-cyan-400/90 tabular-nums">
               [{new Date(latestIntel.created_at).toLocaleTimeString()}]
             </span>{' '}
@@ -720,21 +715,13 @@ export default function SupplyMap() {
         )}
       </div>
       <div
-        className="map-zoom-controls"
+        className="absolute bottom-4 right-4 z-[4] flex flex-col overflow-hidden rounded-[10px] border border-cyan-500/20 bg-gradient-to-br from-slate-800/95 to-slate-900/95 shadow-[0_4px_24px_rgba(0,0,0,0.45),inset_0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur-md"
         role="group"
         aria-label="Map zoom"
-        style={{
-          position: 'absolute',
-          bottom: 16,
-          right: 16,
-          top: 'auto',
-          left: 'auto',
-          zIndex: 4,
-        }}
       >
         <button
           type="button"
-          className="map-zoom-btn map-zoom-btn--in"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center border-b border-slate-500/20 text-slate-300 transition-colors hover:bg-cyan-500/10 hover:text-cyan-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-cyan-500/60 active:bg-cyan-500/20"
           onClick={handleZoomIn}
           title="Zoom in"
           aria-label="Zoom in"
@@ -751,7 +738,7 @@ export default function SupplyMap() {
         </button>
         <button
           type="button"
-          className="map-zoom-btn"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center text-slate-300 transition-colors hover:bg-cyan-500/10 hover:text-cyan-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-cyan-500/60 active:bg-cyan-500/20"
           onClick={handleZoomOut}
           title="Zoom out"
           aria-label="Zoom out"

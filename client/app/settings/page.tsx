@@ -1,6 +1,12 @@
 'use client';
 
 import Sidebar from '@/components/Sidebar';
+import {
+  dashboardContent,
+  dashboardHeader,
+  dashboardMain,
+  dashboardRoot,
+} from '@/lib/uiClasses';
 
 export default function SettingsPage() {
   const envVars = [
@@ -18,47 +24,55 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
-        <div className="header-brand">
-          <div className="brand-logo">
-            <span className="logo-icon">🛡️</span>
-            <h1>SupplyGuard AI</h1>
+    <div className={dashboardRoot}>
+      <header className={dashboardHeader}>
+        <div className="flex items-center gap-4">
+          <span className="text-2xl">🛡️</span>
+          <div>
+            <h1 className="text-lg font-semibold tracking-tight">SupplyGuard AI</h1>
+            <span className="text-sm text-slate-400">Settings & Configuration</span>
           </div>
-          <span className="header-subtitle">Settings & Configuration</span>
         </div>
       </header>
-      <div className="dashboard-content">
+      <div className={dashboardContent}>
         <Sidebar />
-        <main className="dashboard-main">
-          <div className="disruptions-page">
-            <h2>⚙️ Configuration Reference</h2>
-            <p style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '24px' }}>
-              Environment variables are stored in <code style={{ color: '#F59E0B' }}>.env</code>{' '}
-              (never committed). Update values in the file and restart the server.
+        <main className={dashboardMain}>
+          <div className="p-8">
+            <h2 className="mb-2 text-[22px] font-bold">⚙️ Configuration Reference</h2>
+            <p className="mb-6 text-[13px] text-slate-400">
+              Environment variables are stored in <code className="text-amber-500">.env</code> (never committed).
+              Update values in the file and restart the server.
             </p>
-            <table className="disruptions-table">
+            <table className="w-full border-collapse text-[13px]">
               <thead>
-                <tr>
-                  <th>Variable</th>
-                  <th>Description</th>
-                  <th>Default</th>
-                  <th>Required</th>
+                <tr className="border-b border-white/10">
+                  <th className="p-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted">
+                    Variable
+                  </th>
+                  <th className="p-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted">
+                    Description
+                  </th>
+                  <th className="p-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted">
+                    Default
+                  </th>
+                  <th className="p-3 text-left text-[10px] font-semibold uppercase tracking-wider text-muted">
+                    Required
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {envVars.map((v) => (
-                  <tr key={v.key}>
-                    <td>
-                      <code style={{ color: '#3B82F6', fontSize: '12px' }}>{v.key}</code>
+                  <tr key={v.key} className="border-b border-slate-700/50 hover:bg-white/5">
+                    <td className="p-3">
+                      <code className="text-xs text-blue-400">{v.key}</code>
                     </td>
-                    <td>{v.desc}</td>
-                    <td style={{ color: '#9CA3AF' }}>{v.default || '—'}</td>
-                    <td>
+                    <td className="p-3 text-slate-400">{v.desc}</td>
+                    <td className="p-3 text-slate-500">{v.default || '—'}</td>
+                    <td className="p-3">
                       {v.required ? (
-                        <span style={{ color: '#EF4444' }}>Yes</span>
+                        <span className="text-rose-400">Yes</span>
                       ) : (
-                        <span style={{ color: '#6B7280' }}>No</span>
+                        <span className="text-slate-500">No</span>
                       )}
                     </td>
                   </tr>
