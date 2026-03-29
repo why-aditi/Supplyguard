@@ -56,7 +56,7 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
   return (
     <div className="simulate-controls-container flex flex-col">
       <div className="mb-8">
-        <h2 className="font-tech text-2xl text-amber-500 mb-3 flex items-center gap-3">
+        <h2 className="font-tech text-2xl text-amber-500 mb-4 flex items-center gap-4">
           <span className="text-3xl">🎮</span> SIMULATION CONTROL
         </h2>
         <p className="font-tech text-[11px] text-muted leading-relaxed opacity-80 uppercase tracking-widest">
@@ -97,7 +97,7 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
         </div>
 
         <div className="form-group-v2">
-          <div className="flex justify-between items-center mb-1">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '4px' }}>
             <label className="font-tech text-[11px] text-muted tracking-[0.2em] font-semibold uppercase">SEVERITY</label>
             <span className="font-mono text-amber-400 text-sm font-bold">{(severity * 100).toFixed(0)}%</span>
           </div>
