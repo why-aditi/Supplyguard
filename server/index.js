@@ -1,0 +1,440 @@
+import { readFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import express from 'express';
+import cors from 'cors';
+import { WebSocketServer } from 'ws';
+import { createServer } from 'http';
+import dotenv from 'dotenv';
+import { AISStreamWorker } from './workers/aisStreamWorker.js';
+
+dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PORT = process.env.PORT || 3001;
+
+// ── Load seed graph data ────────────────────────────
+const seedData = JSON.parse(
+  readFileSync(join(__dirname, '..', 'data', 'seed', 'graph-seed.json'), 'utf-8')
+);
+
+// In-memory state
+const graphNodes = new Map(seedData.nodes.map((n) => [n.id, { ...n }]));
+const graphEdges = [...seedData.edges];
+const activeDisruptions = new Map(); // id -> disruption event
+
+// ── AISstream Worker ────────────────────────────────
+const aisWorker = new AISStreamWorker({
+  apiKey: process.env.AISSTREAM_API_KEY,
+  onDisruption: (event) => {
+    // AIS-detected congestion → create disruption + propagate
+    const disruptionId = `ais-${Date.now()}`;
+    const disruption = {
+      id: disruptionId,
+      disruption_type: event.disruption_type,
+      severity: event.severity,
+      location: event.location,
+      affected_node_id: event.affected_node_id,
+      confidence: event.confidence,
+      created_at: new Date().toISOString(),
+      resolved: false,
+      source: 'aisstream',
+      details: event.details,
+    };
+    activeDisruptions.set(disruptionId, disruption);
+
+    // BFS propagation
+    if (graphNodes.has(event.affected_node_id)) {
+      const propagation = propagateRisk(event.affected_node_id, event.severity);
+      for (const [nid, data] of Object.entries(propagation)) {
+        const n = graphNodes.get(nid);
+        if (n) {
+          n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+        }
+      }
+      broadcastRiskUpdate(propagation);
+    }
+
+    broadcastDisruption(disruption);
+    console.log(`🚨 AIS disruption: ${event.disruption_type} at ${event.location} (severity: ${event.severity})`);
+  },
+  onVesselUpdate: (update) => {
+    // Optionally broadcast individual vessel positions to frontend
+    broadcast({ type: 'vessel_update', ...update });
+  },
+});
+
+// ── Express App ─────────────────────────────────────
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// GET /api/graph — full graph for D3
+app.get('/api/graph', (_req, res) => {
+  res.json({
+    nodes: Array.from(graphNodes.values()),
+    edges: graphEdges,
+  });
+});
+
+// GET /api/risks — current risk scores
+app.get('/api/risks', (_req, res) => {
+  const risks = {};
+  for (const [id, node] of graphNodes) {
+    risks[id] = node.current_risk;
+  }
+  res.json(risks);
+});
+
+// GET /api/disruptions — active disruption events
+app.get('/api/disruptions', (_req, res) => {
+  res.json(Array.from(activeDisruptions.values()));
+});
+
+// POST /api/simulate — trigger a disruption
+app.post('/api/simulate', async (req, res) => {
+  const { node_id, disruption_type = 'port_delay', severity = 0.8 } = req.body;
+
+  if (!node_id || !graphNodes.has(node_id)) {
+    return res.status(400).json({ error: 'Invalid node_id' });
+  }
+
+  const disruptionId = `dis-${Date.now()}`;
+  const node = graphNodes.get(node_id);
+
+  // Create disruption event
+  const disruption = {
+    id: disruptionId,
+    disruption_type,
+    severity,
+    location: node.location?.country || '',
+    affected_node_id: node_id,
+    confidence: 0.92,
+    created_at: new Date().toISOString(),
+    resolved: false,
+  };
+  activeDisruptions.set(disruptionId, disruption);
+
+  // Run BFS propagation (in-memory)
+  const propagationResult = propagateRisk(node_id, severity);
+
+  // Update node risk scores
+  for (const [nid, data] of Object.entries(propagationResult)) {
+    const n = graphNodes.get(nid);
+    if (n) {
+      n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+    }
+  }
+
+  // Broadcast via WebSocket
+  broadcastRiskUpdate(propagationResult);
+  broadcastDisruption(disruption);
+
+  // Try to get LLM recommendations (if keys configured)
+  let recommendations = null;
+  try {
+    recommendations = await getRecommendations(disruption, propagationResult);
+  } catch (err) {
+    console.warn('LLM recommendations unavailable:', err.message);
+  }
+
+  res.json({
+    disruption,
+    propagation: propagationResult,
+    recommendations,
+  });
+});
+
+// POST /api/recommendations — get LLM rerouting for a disruption
+app.post('/api/recommendations', async (req, res) => {
+  const { disruption_id } = req.body;
+  const disruption = activeDisruptions.get(disruption_id);
+
+  if (!disruption) {
+    return res.status(404).json({ error: 'Disruption not found' });
+  }
+
+  try {
+    const propagation = propagateRisk(disruption.affected_node_id, disruption.severity);
+    const recs = await getRecommendations(disruption, propagation);
+    res.json(recs);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to generate recommendations', message: err.message });
+  }
+});
+
+// DELETE /api/simulate/reset — clear all disruptions
+app.delete('/api/simulate/reset', (_req, res) => {
+  activeDisruptions.clear();
+  for (const [, node] of graphNodes) {
+    node.current_risk = 0.0;
+  }
+  broadcastReset();
+  res.json({ status: 'reset' });
+});
+
+// GET /api/ais/status — AISstream connection status
+app.get('/api/ais/status', (_req, res) => {
+  res.json(aisWorker.getStatus());
+});
+
+// ── BFS Risk Propagation ────────────────────────────
+function propagateRisk(startNodeId, baseRisk, decay = 0.7, maxDepth = 6) {
+  const adjacency = buildAdjacency();
+  const visited = {};
+  const queue = [{ nodeId: startNodeId, risk: baseRisk, depth: 0 }];
+
+  while (queue.length > 0) {
+    const { nodeId, risk, depth } = queue.shift();
+    if (visited[nodeId] || risk < 0.05) continue;
+
+    visited[nodeId] = { risk: Math.round(risk * 1000) / 1000, depth };
+
+    if (depth >= maxDepth) continue;
+
+    const neighbors = adjacency.get(nodeId) || [];
+    for (const { target, weight } of neighbors) {
+      if (!visited[target]) {
+        const propagated = risk * weight * decay;
+        queue.push({ nodeId: target, risk: propagated, depth: depth + 1 });
+      }
+    }
+  }
+
+  return visited;
+}
+
+function buildAdjacency() {
+  const adj = new Map();
+  for (const edge of graphEdges) {
+    if (!adj.has(edge.source)) adj.set(edge.source, []);
+    adj.get(edge.source).push({ target: edge.target, weight: edge.weight });
+  }
+  return adj;
+}
+
+// ── LLM Recommendation Engine ───────────────────────
+async function getRecommendations(disruption, propagation) {
+  const affectedNodes = Object.entries(propagation)
+    .map(([id, data]) => ({
+      id,
+      name: graphNodes.get(id)?.name || id,
+      risk: data.risk,
+      depth: data.depth,
+    }))
+    .sort((a, b) => b.risk - a.risk);
+
+  // Find alternate routes (edges not in the disrupted path)
+  const disruptedIds = new Set(Object.keys(propagation));
+  const alternateRoutes = graphEdges
+    .filter(
+      (e) =>
+        !disruptedIds.has(e.source) || !disruptedIds.has(e.target)
+    )
+    .slice(0, 10)
+    .map((e) => ({
+      from: graphNodes.get(e.source)?.name || e.source,
+      to: graphNodes.get(e.target)?.name || e.target,
+      mode: e.transport_mode,
+      lead_time_days: e.lead_time_days,
+    }));
+
+  const prompt = buildPrompt(disruption, affectedNodes, alternateRoutes);
+
+  // Try Gemini first, then Grok
+  let result;
+  let llmSource = 'gemini';
+
+  try {
+    result = await callGemini(prompt);
+  } catch (err) {
+    console.warn('Gemini failed, trying Groq:', err.message);
+    llmSource = 'groq';
+    try {
+      result = await callGroq(prompt);
+    } catch (groqErr) {
+      console.warn('Groq also failed:', groqErr.message);
+      // Return graph-computed fallback
+      return {
+        disruption_id: disruption.id,
+        llm_source: 'fallback',
+        recommendations: alternateRoutes.slice(0, 3).map((r, i) => ({
+          rank: i + 1,
+          route: `${r.from} → ${r.to} (${r.mode})`,
+          reasoning: 'Graph-computed alternate route (LLM unavailable)',
+          cost_delta_percent: Math.round(Math.random() * 30 + 5),
+          lead_time_delta_days: r.lead_time_days,
+          risk_reduction_percent: Math.round(Math.random() * 40 + 20),
+          confidence: 'medium',
+        })),
+      };
+    }
+  }
+
+  // Parse and validate
+  try {
+    const parsed = typeof result === 'string' ? JSON.parse(result) : result;
+    const recs = (parsed.recommendations || []).map((r) => ({
+      ...r,
+      llm_source: llmSource,
+    }));
+    return {
+      disruption_id: disruption.id,
+      llm_source: llmSource,
+      recommendations: recs.slice(0, 3),
+    };
+  } catch (parseErr) {
+    console.error('Failed to parse LLM response:', parseErr.message);
+    return {
+      disruption_id: disruption.id,
+      llm_source: 'fallback',
+      recommendations: [],
+    };
+  }
+}
+
+function buildPrompt(disruption, affectedNodes, alternateRoutes) {
+  return `You are a supply chain risk analyst. A disruption has been detected.
+
+DISRUPTION: ${disruption.disruption_type} at ${disruption.location || disruption.affected_node_id} — severity ${disruption.severity}/1.0
+
+AFFECTED NODES (from graph propagation):
+${JSON.stringify(affectedNodes.slice(0, 15), null, 2)}
+
+AVAILABLE ALTERNATE ROUTES (pre-computed by graph engine):
+${JSON.stringify(alternateRoutes, null, 2)}
+
+Return ONLY valid JSON — no preamble, no markdown:
+{
+  "recommendations": [
+    {
+      "rank": 1,
+      "route": "Description of rerouting path",
+      "reasoning": "Why this route is recommended",
+      "cost_delta_percent": 12,
+      "lead_time_delta_days": 3,
+      "risk_reduction_percent": 45,
+      "confidence": "high"
+    }
+  ]
+}
+
+Provide exactly 3 ranked recommendations. Be specific about ports, carriers, and transport modes.`;
+}
+
+async function callGemini(prompt) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+
+  const { GoogleGenerativeAI } = await import('@google/generative-ai');
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-2.0-flash',
+    generationConfig: {
+      responseMimeType: 'application/json',
+    },
+  });
+
+  const timeoutMs = parseInt(process.env.LLM_TIMEOUT_MS || '8000', 10);
+
+  const result = await Promise.race([
+    model.generateContent(prompt),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Gemini timeout')), timeoutMs)
+    ),
+  ]);
+
+  return result.response.text();
+}
+
+async function callGroq(prompt) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error('GROQ_API_KEY not set');
+
+  const { default: OpenAI } = await import('openai');
+  const client = new OpenAI({
+    apiKey,
+    baseURL: 'https://api.groq.com/openai/v1',
+  });
+
+  const resp = await client.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
+    messages: [{ role: 'user', content: prompt }],
+    response_format: { type: 'json_object' },
+  });
+
+  return resp.choices[0].message.content;
+}
+
+// ── WebSocket Server ────────────────────────────────
+const server = createServer(app);
+const wss = new WebSocketServer({ server, path: '/ws' });
+
+const wsClients = new Set();
+
+wss.on('connection', (ws) => {
+  wsClients.add(ws);
+  console.log(`WS client connected (total: ${wsClients.size})`);
+
+  // Send current state on connect
+  ws.send(
+    JSON.stringify({
+      type: 'init',
+      risks: Object.fromEntries(
+        Array.from(graphNodes.entries()).map(([id, n]) => [id, n.current_risk])
+      ),
+      disruptions: Array.from(activeDisruptions.values()),
+    })
+  );
+
+  ws.on('close', () => {
+    wsClients.delete(ws);
+    console.log(`WS client disconnected (total: ${wsClients.size})`);
+  });
+});
+
+function broadcast(data) {
+  const msg = JSON.stringify(data);
+  for (const ws of wsClients) {
+    if (ws.readyState === 1) ws.send(msg);
+  }
+}
+
+function broadcastRiskUpdate(propagation) {
+  const timestamp = new Date().toISOString();
+  // Send updates one by one with small delays for animation effect
+  const entries = Object.entries(propagation).sort((a, b) => a[1].depth - b[1].depth);
+  
+  entries.forEach(([nodeId, data], i) => {
+    setTimeout(() => {
+      broadcast({
+        type: 'risk_update',
+        node_id: nodeId,
+        risk_score: data.risk,
+        depth: data.depth,
+        timestamp,
+      });
+    }, i * 400); // 400ms per hop for ripple animation
+  });
+}
+
+function broadcastDisruption(disruption) {
+  broadcast({ type: 'disruption', ...disruption });
+}
+
+function broadcastReset() {
+  broadcast({ type: 'reset' });
+}
+
+// ── Start Server ────────────────────────────────────
+server.listen(PORT, () => {
+  console.log(`\n🛡️  SupplyGuard API running on http://localhost:${PORT}`);
+  console.log(`📡 WebSocket on ws://localhost:${PORT}/ws`);
+  console.log(`📊 ${graphNodes.size} nodes, ${graphEdges.length} edges loaded`);
+
+  // Start AIS tracking if enabled
+  if (process.env.AISSTREAM_ENABLED !== 'false') {
+    aisWorker.start();
+  }
+  console.log('');
+});

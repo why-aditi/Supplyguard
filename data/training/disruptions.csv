@@ -1,0 +1,91 @@
+headline,body,label
+"Shanghai port reports 4-day backlog due to congestion","Container ships queue at Shanghai port anchorage as terminal operators struggle with unprecedented volume surge. Average vessel wait time has increased to 96 hours.",port_delay
+"Rotterdam port delays worsen amid labor shortages","The Port of Rotterdam faces significant berthing delays as staff shortages compound with peak shipping season demand.",port_delay
+"Singapore port congestion reaches 3-year high","Vessel waiting times at the Port of Singapore have surged to levels not seen since the pandemic peak, with over 40 ships at anchorage.",port_delay
+"Port of Los Angeles declares congestion emergency","LA port officials announce emergency measures as container backlog exceeds 100 vessels waiting for berth allocation.",port_delay
+"Hamburg port terminal shutdown after crane malfunction","Operations at Hamburg's Eurogate terminal halted for 48 hours following critical crane failure affecting Container Terminal 4.",port_delay
+"Busan port operations disrupted by typhoon preparations","South Korea's largest port suspends loading operations as Typhoon Khanun approaches the Korean Peninsula.",port_delay
+"Dubai Jebel Ali port faces customs processing delays","New UAE import regulations cause 72-hour processing delays at Jebel Ali Free Zone for electronics shipments.",port_delay
+"Panama Canal restrictions reduce daily vessel transits","Drought conditions force Panama Canal Authority to cut daily transit slots from 36 to 24 vessels.",port_delay
+"Mumbai JNPT port hit by severe waterlogging","Heavy monsoon rains cause flooding at Jawaharlal Nehru Port Trust, suspending container movement for 36 hours.",port_delay
+"Antwerp port workers stage wildcat protest over safety","Dock workers at Belgium's largest port walk off the job citing unsafe container stacking practices.",port_delay
+"Congestion at Ningbo port delays electronics exports","China's second-busiest port faces 5-day average waiting time amid peak holiday shipping demand.",port_delay
+"Chennai port container yard reaches full capacity","India's Chennai port temporarily stops accepting new containers as yard utilization hits 100 percent.",port_delay
+"Suez Canal blocked by grounded container ship","A 400-meter container vessel runs aground in the Suez Canal, blocking all north and southbound traffic.",port_delay
+"Long Beach port trucking bottleneck worsens","Truck wait times at Long Beach terminals exceed 8 hours as chassis shortage compounds congestion.",port_delay
+"Felixstowe port strike disrupts UK supply chains","Eight-day strike at Britain's busiest container port diverts vessels to continental European alternatives.",port_delay
+"Typhoon Mawar threatens Philippine Sea shipping lanes","Category 4 typhoon forces rerouting of trans-Pacific vessel traffic through alternative shipping corridors.",weather_event
+"Hurricane season forecast predicts above-average Gulf storms","NOAA projects 17-21 named storms for 2024 Atlantic season threatening Gulf Coast port operations.",weather_event
+"Cyclone Biparjoy disrupts Arabian Sea shipping routes","Severe cyclonic storm in the Arabian Sea forces suspension of shipping between India and Gulf states.",weather_event
+"Extreme flooding shuts down Rhine River barges","Record water levels on the Rhine force suspension of inland waterway transport connecting Rotterdam to industrial Germany.",weather_event
+"Earthquake damages port infrastructure in southern Turkey","6.4 magnitude earthquake strikes near Iskenderun port, collapsing container gantries and damaging quay walls.",weather_event
+"Tsunami warning issued for Pacific Rim ports","Magnitude 7.8 earthquake off Chile triggers tsunami alerts across Pacific basin shipping lanes.",weather_event
+"Severe drought grounds Mississippi River barge traffic","Historic low water levels on Mississippi River halt grain barge shipments from US heartland.",weather_event
+"Ice storm closes Great Lakes shipping lanes","Coast Guard closes portions of Great Lakes to commercial traffic as severe ice formation blocks navigation channels.",weather_event
+"Heavy fog blankets English Channel forcing port closures","Dense fog conditions force temporary closure of Dover and Calais ports disrupting cross-Channel freight.",weather_event
+"Monsoon flooding closes key India-Bangladesh border crossings","Severe monsoon flooding inundates road and rail links between India and Bangladesh halting overland trade.",weather_event
+"Wildfire smoke grounds cargo flights at western US airports","Hazardous air quality from Canadian wildfires forces FAA to restrict cargo operations at multiple airports.",weather_event
+"Record heatwave forces Rhine barge weight restrictions","European heat dome drops Rhine water levels forcing barges to reduce cargo loads by 75%.",weather_event
+"Volcanic eruption disrupts Indonesian shipping lanes","Mount Ruang eruption forces maritime exclusion zone in Sulawesi Sea affecting major Asia-Pacific trade route.",weather_event
+"Storm Ciaran batters French Atlantic coast ports","Violent storm brings 180km/h winds to Brest and Nantes-Saint-Nazaire ports halting operations for 72 hours.",weather_event
+"TSMC halts production at Hsinchu fab amid power outage","Taiwan's largest chip manufacturer suspends operations at its most advanced fabrication facility following island-wide power grid failure.",supplier_failure
+"Samsung semiconductor plant fire disrupts memory chip supply","A fire at Samsung's Pyeongtaek DRAM facility destroys production line serving major smartphone manufacturers.",supplier_failure
+"Foxconn COVID lockdown shuts Zhengzhou iPhone factory","Strict lockdown measures force Foxconn to halt production at world's largest iPhone assembly plant affecting Q4 shipments.",supplier_failure
+"Bosch warns of critical automotive chip shortage","German auto supplier Bosch tells customers to expect 6-month delays on microcontroller deliveries amid unprecedented demand.",supplier_failure
+"Tesla battery supplier CATL reports contamination at Ningde plant","Contamination event at CATL's main lithium-ion battery facility forces production halt and recall of affected cells.",supplier_failure
+"Intel delays Arizona fab expansion by 2 years","Intel pushes back Chandler fab commissioning date citing construction delays and equipment installation challenges.",supplier_failure
+"Rare earth mine collapse in Inner Mongolia halts global supply","Major landslide at Baotou rare earth mining complex disrupts 30% of global rare earth production.",supplier_failure
+"LG Chem battery plant explosion injures workers","Industrial accident at LG Chem's Ochang battery facility triggers safety review and temporary production shutdown.",supplier_failure
+"Panasonic halts battery cell production over quality defect","Panasonic Energy suspends output at Osaka plant after discovering electrode coating defects in EV battery cells.",supplier_failure
+"SK Hynix faces NAND flash contamination at Icheon fab","Particle contamination at SK Hynix cleanroom forces scrapping of two weeks of NAND flash wafer production.",supplier_failure
+"BYD recalls 200000 vehicles over battery safety concerns","Chinese EV maker issues massive recall citing potential thermal runaway risk in blade battery packs.",supplier_failure
+"Qualcomm chip production delayed at GlobalFoundries","Contract manufacturer GlobalFoundries misses delivery targets for Qualcomm 5G modem chips citing yield issues.",supplier_failure
+"VW halts Wolfsburg assembly line due to wiring harness shortage","Volkswagen pauses production at its main plant after Ukrainian wiring harness supplier disrupted by conflict.",supplier_failure
+"MediaTek faces wafer allocation cuts at TSMC","TSMC reduces wafer allocation for MediaTek amid competing demand from AI chip customers.",supplier_failure
+"Red Sea attacks force Suez Canal rerouting for 12 carriers","Houthi missile strikes on commercial vessels force major shipping lines to divert around Cape of Good Hope.",geopolitical
+"US-China tariff escalation hits semiconductor imports","New 25% tariff on Chinese semiconductor equipment threatens to disrupt chip supply chain restructuring.",geopolitical
+"Taiwan Strait military exercises disrupt shipping lanes","Chinese military drills around Taiwan force commercial vessels into longer alternative routes adding 2-3 days transit.",geopolitical
+"EU imposes sanctions on Russian Arctic shipping routes","New EU sanctions package targets Russian LNG carriers using Northern Sea Route for European deliveries.",geopolitical
+"South China Sea territorial dispute blocks fishing and cargo routes","Philippine-China standoff at Second Thomas Shoal extends to commercial shipping corridor disruptions.",geopolitical
+"US export controls expand to advanced AI chips for China","Commerce Department broadens export restrictions on AI accelerators destined for Chinese tech companies.",geopolitical
+"India bans wheat exports amid domestic supply concerns","Government of India prohibits wheat exports effective immediately citing food security amid heat-damaged crops.",geopolitical
+"Russia-Ukraine conflict disrupts Black Sea grain corridor","Suspension of Black Sea grain initiative halts Ukrainian grain exports through Odessa port complex.",geopolitical
+"Iran seizes tanker in Strait of Hormuz","Iranian naval forces board and detain oil tanker in international waters of Hormuz strait disrupting crude shipments.",geopolitical
+"Japan tightens semiconductor equipment export controls","Tokyo announces new restrictions on chipmaking equipment exports to China matching US-led technology containment.",geopolitical
+"Brazil Amazon mining dispute blocks iron ore exports","Indigenous land rights ruling halts operations at major Carajás iron ore complex affecting global steel supply.",geopolitical
+"Turkey-Iraq border closure disrupts overland trade","Military operations in northern Iraq force closure of Habur Gate border crossing halting truck freight.",geopolitical
+"French dock workers announce indefinite strike at Le Havre","CGT union calls open-ended industrial action at France's second-largest port over pension reform dispute.",transport_strike
+"German rail workers strike paralyzes freight network","GDL union launches 6-day rail strike affecting DB Cargo operations across continental European freight corridors.",transport_strike
+"UK lorry drivers block Channel Tunnel access over fuel costs","Truckers stage go-slow protest blocking freight access to Eurotunnel terminal at Folkestone.",transport_strike
+"South Korean truckers strike threatens auto parts supply","Cargo Truckers Solidarity Division launches nationwide work stoppage disrupting delivery of auto components from ports.",transport_strike
+"Australian dock workers walk out at major container terminals","Maritime Union of Australia members strike at Sydney and Melbourne terminals over automation dispute.",transport_strike
+"Belgian rail strike halts freight through Antwerp","CGSP union calls 48-hour rail work stoppage disrupting intermodal freight connections at Port of Antwerp.",transport_strike
+"Italian port workers refuse to load arms shipments","Dock workers at Genoa and Livorno ports refuse to handle military cargo citing ethical objections.",transport_strike
+"Canadian rail strike shuts down CN and CPKC networks","Teamsters Canada Rail Conference initiates simultaneous strike at both Class I railways halting continental freight.",transport_strike
+"Greek ferry workers strike strands cargo at Piraeus","Pan-Hellenic Seamen's Federation calls 24-hour strike affecting cargo ferry services to Greek islands.",transport_strike
+"US East Coast longshoremen threaten port shutdown","International Longshoremen's Association warns of strike at 36 ports from Maine to Texas over automation clause.",transport_strike
+"US CBP tightens inspection rules for Chinese electronics imports","New Customs and Border Protection protocols require additional screening for all electronics shipments from China.",customs_delay
+"Brexit customs checks cause Dover freight processing delays","Full customs declarations now required for all EU-UK goods causing 4-hour average processing delays at Dover.",customs_delay
+"India introduces new import licensing requirements for electronics","Ministry of Commerce mandates import license for laptops tablets and servers from all origin countries.",customs_delay
+"Australia biosecurity inspections delay containerized food imports","Enhanced container inspection protocols at Australian ports add 5-day average clearance time for food products.",customs_delay
+"EU carbon border adjustment mechanism delays steel imports","New CBAM reporting requirements cause customs processing bottlenecks for steel and aluminum shipments.",customs_delay
+"Thailand customs system upgrade causes nationwide import delays","Rollout of new customs EDI platform creates processing backlog at Laem Chabang and Bangkok ports.",customs_delay
+"Mexico tightens automotive rules of origin verification","Enhanced USMCA compliance checks delay automotive parts clearance at Laredo and El Paso crossings.",customs_delay
+"Nigeria customs service impounds containers over documentation","Lagos customs authorities detain 500 containers at Apapa port over documentation discrepancies.",customs_delay
+"Vietnam new regulations delay timber import clearance","Forest product traceability requirements add 10-day processing time for timber imports at Ho Chi Minh City.",customs_delay
+"Saudi Arabia implements new halal certification checks","Additional halal compliance verification for food imports extends customs clearance at Jeddah Islamic Port.",customs_delay
+"IMO releases updated ballast water management regulations","International Maritime Organization publishes revised guidelines for ballast water treatment system compliance.",none
+"Maersk reports record Q3 profits on strong freight rates","Danish shipping giant beats analyst expectations with 4.2B revenue driven by sustained high container rates.",none
+"New container ship design promises 15% fuel efficiency gain","Hyundai Heavy Industries unveils next-generation hull design for 24000-TEU vessels targeting 2026 delivery.",none
+"Global shipping industry commits to 2050 net-zero target","Major carriers sign declaration at COP28 pledging full decarbonization of maritime transport by 2050.",none
+"Port of Singapore completes automated terminal expansion","PSA International opens fully automated Tuas mega port phase adding 20 million TEU annual capacity.",none
+"CMA CGM orders 12 methanol-powered container ships","French shipping line places 3.5B order for dual-fuel vessels as part of energy transition strategy.",none
+"World Bank publishes updated Logistics Performance Index","Annual LPI report ranks Singapore Netherlands and Germany as top-performing logistics economies globally.",none
+"Mediterranean Shipping Company surpasses Maersk in fleet size","MSC becomes world's largest container shipping line by total TEU capacity following acquisition spree.",none
+"Shanghai COSCO launches new Asia-Europe express service","New AEX7 routing promises 3-day transit time reduction on China-to-Northern-Europe container services.",none
+"Panama Canal completes water conservation lock system upgrade","Multi-year infrastructure project adds water recycling basins reducing freshwater consumption per transit by 60%.",none
+"Global container shipping index falls 12% on weakening demand","Drewry World Container Index drops to lowest level in 18 months as peak season volumes disappoint.",none
+"Hapag-Lloyd and ONE announce vessel sharing agreement","Two major carriers form operational alliance on transpacific trade adding schedule reliability on key routes.",none
+"Digital twins technology transforms port operations efficiency","Smart port initiatives using IoT sensors and AI reduce average vessel turnaround time by 22% at pilot facilities.",none
+"New maritime cybersecurity framework mandated by UN agency","IMO adopts mandatory cyber risk management requirements for all vessels over 500 gross tonnage effective 2025.",none
+"Ocean freight spot rates stabilize after volatile quarter","Shanghai Containerized Freight Index shows rate stabilization across major trade lanes after Q2 fluctuations.",none
