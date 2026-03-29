@@ -5,8 +5,6 @@ import SimulateControls from '@/components/SimulateControls';
 import SupplyMap from '@/components/SupplyMap';
 import Sidebar from '@/components/Sidebar';
 import RiskScoreCard from '@/components/RiskScoreCard';
-import DisruptionBanner from '@/components/DisruptionBanner';
-
 export default function SimulatePage() {
   const { wsConnected } = useSupplyGuardStore();
 
@@ -14,8 +12,7 @@ export default function SimulatePage() {
     <div className="dashboard-mission-control">
       {/* 1. Header & Alerts Row */}
       <div className="mc-row-top">
-        <DisruptionBanner />
-        <header className="floating-header glass-panel">
+        <header className="floating-header floating-header--with-metrics glass-panel">
           <div className="header-brand">
             <div className="brand-logo">
               <h1 className="font-tech text-amber-400">SIMULATION LAB</h1>
@@ -24,7 +21,8 @@ export default function SimulatePage() {
               Stress-Test Network Resilience
             </span>
           </div>
-          <div className="header-status font-mono">
+          <RiskScoreCard compact />
+          <div className="header-status font-mono header-actions-shrink">
             <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
             <span className="status-text">{wsConnected ? 'LIVE' : 'OFFLINE'}</span>
           </div>
@@ -57,13 +55,6 @@ export default function SimulatePage() {
               </div>
             </div>
           </main>
-        </section>
-      </div>
-
-      {/* 3. Metrics Row */}
-      <div className="mc-row-bottom">
-        <section className="floating-metrics">
-          <RiskScoreCard />
         </section>
       </div>
     </div>

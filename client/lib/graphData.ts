@@ -2,6 +2,9 @@ import type { GraphNode, GraphEdge } from './types';
 
 import { fetchGraph } from './api';
 
+/** Ports render smaller than other node types on the geographic map */
+const GEO_MAP_PORT_RADIUS_FACTOR = 0.6;
+
 // Cached data from the server API
 let _cachedData: { nodes: GraphNode[]; edges: GraphEdge[] } | null = null;
 
@@ -83,6 +86,18 @@ export function volumeToWidth(volume: number): number {
 /** Node radius from centrality */
 export function centralityToRadius(centrality: number): number {
   return 8 + centrality * 12;
+}
+
+/** Compact markers for geographic world map (readable at full-world zoom) */
+export function geoMapNodeRadius(centrality: number): number {
+  return 2.5 + centrality * 3.5;
+}
+
+/** Same as geoMapNodeRadius but ports use a smaller factor for readability */
+export function geoMapNodeRadiusForNode(node: GraphNode): number {
+  const base = geoMapNodeRadius(node.centrality);
+  if (node.type === 'port') return base * GEO_MAP_PORT_RADIUS_FACTOR;
+  return base;
 }
 
 /** Transport mode colors */

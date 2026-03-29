@@ -2,7 +2,6 @@
 
 import { useSupplyGuardStore } from '@/lib/store';
 import Sidebar from '@/components/Sidebar';
-import DisruptionBanner from '@/components/DisruptionBanner';
 import RiskScoreCard from '@/components/RiskScoreCard';
 import { DISRUPTION_TYPE_LABELS } from '@/lib/types';
 
@@ -13,8 +12,7 @@ export default function DisruptionsPage() {
     <div className="dashboard-mission-control">
       {/* 1. Header & Alerts Row */}
       <div className="mc-row-top">
-        <DisruptionBanner />
-        <header className="floating-header glass-panel">
+        <header className="floating-header floating-header--with-metrics glass-panel">
           <div className="header-brand">
             <div className="brand-logo">
               <h1 className="font-tech text-cyan-400">DISRUPTION LOG</h1>
@@ -23,7 +21,8 @@ export default function DisruptionsPage() {
               Intelligence Event Stream
             </span>
           </div>
-          <div className="header-status font-mono">
+          <RiskScoreCard compact />
+          <div className="header-status font-mono header-actions-shrink">
             <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
             <span className="status-text">{wsConnected ? 'LIVE' : 'OFFLINE'}</span>
             <span className="header-node-count ml-4 opacity-60">
@@ -134,13 +133,6 @@ export default function DisruptionsPage() {
             )}
           </div>
         </main>
-      </div>
-
-      {/* 3. Metrics Row */}
-      <div className="mc-row-bottom">
-        <section className="floating-metrics">
-          <RiskScoreCard />
-        </section>
       </div>
     </div>
   );

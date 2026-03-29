@@ -2,7 +2,7 @@
 
 import { useSupplyGuardStore } from '@/lib/store';
 
-export default function RiskScoreCard() {
+export default function RiskScoreCard({ compact = false }: { compact?: boolean }) {
   const { nodes, disruptions } = useSupplyGuardStore();
 
   const totalNodes = nodes.length;
@@ -47,9 +47,14 @@ export default function RiskScoreCard() {
   ];
 
   return (
-    <div className="risk-score-cards w-full">
+    <div
+      className={`risk-score-cards w-full ${compact ? 'risk-score-cards--compact' : ''}`}
+    >
       {cards.map((card) => (
-        <div key={card.label} className="risk-card glass-panel glass-interactive">
+        <div
+          key={card.label}
+          className={`risk-card glass-panel glass-interactive ${compact ? 'risk-card--compact' : ''}`}
+        >
           <div className="risk-card-icon">{card.icon}</div>
           <div className="risk-card-content">
             <span className="risk-card-value font-mono" style={{ color: card.color }}>

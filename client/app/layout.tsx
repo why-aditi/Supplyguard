@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import AppShell from '@/components/AppShell';
+import { chakraPetch, inter, jetbrainsMono } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: 'SupplyGuard AI — Supply Chain Disruption Detector',
@@ -15,7 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${inter.variable} ${chakraPetch.variable} ${jetbrainsMono.variable}`}
+    >
       <body>
         <AppShell>{children}</AppShell>
       </body>

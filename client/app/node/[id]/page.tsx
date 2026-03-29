@@ -8,6 +8,7 @@ import { riskToColor, centralityToRadius } from '@/lib/graphData';
 import { NODE_TYPE_CONFIG } from '@/lib/types';
 import type { GraphNode, GraphEdge } from '@/lib/types';
 import Sidebar from '@/components/Sidebar';
+import { inter } from '@/lib/fonts';
 
 export default function NodeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -117,7 +118,7 @@ export default function NodeDetailPage({ params }: { params: Promise<{ id: strin
       .attr('fill', (d) => (d.id === id ? '#F9FAFB' : '#9CA3AF'))
       .attr('font-size', (d) => (d.id === id ? '12px' : '10px'))
       .attr('font-weight', (d) => (d.id === id ? '600' : '400'))
-      .attr('font-family', 'Inter, system-ui, sans-serif')
+      .attr('font-family', inter.style.fontFamily)
       .attr('pointer-events', 'none');
 
     const simulation = d3

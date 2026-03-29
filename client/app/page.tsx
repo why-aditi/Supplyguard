@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useSupplyGuardStore } from '@/lib/store';
 import SupplyMap from '@/components/SupplyMap';
 import RiskScoreCard from '@/components/RiskScoreCard';
-import DisruptionBanner from '@/components/DisruptionBanner';
 import RecommendationDrawer from '@/components/RecommendationDrawer';
 import Sidebar from '@/components/Sidebar';
 import SimulateControls from '@/components/SimulateControls';
@@ -17,15 +16,16 @@ export default function DashboardPage() {
     <div className="dashboard-mission-control">
       {/* 1. Header & Alerts Row */}
       <div className="mc-row-top">
-        <DisruptionBanner />
-        <header className="floating-header glass-panel">
+        <header className="floating-header floating-header--with-metrics glass-panel">
           <div className="header-brand">
             <div className="brand-logo">
               <h1 className="font-tech text-cyan-400">SUPPLYGUARD AI</h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <RiskScoreCard compact />
+
+          <div className="flex items-center gap-6 header-actions-shrink">
             {/* Simulate Trigger Button */}
             <button
               className="btn-simulate-trigger"
@@ -57,17 +57,10 @@ export default function DashboardPage() {
         </main>
       </div>
 
-      {/* 3. Global Information Row */}
-      <div className="mc-row-bottom">
-        <section className="floating-metrics">
-          <RiskScoreCard />
-        </section>
-      </div>
-
-      {/* 4. Overlays */}
+      {/* 3. Overlays */}
       <RecommendationDrawer />
 
-      {/* 5. Simulation Modal */}
+      {/* 4. Simulation Modal */}
       {isSimulateModalOpen && (
         <div className="modal-overlay" onClick={() => setIsSimulateModalOpen(false)}>
           <div className="modal-content glass-panel" onClick={(e) => e.stopPropagation()}>
