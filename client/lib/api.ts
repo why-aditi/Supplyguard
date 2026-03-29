@@ -18,19 +18,33 @@ export async function fetchDisruptions() {
   return res.json();
 }
 
+export type TriggerSimulationOptions = {
+  originNodeId?: string;
+  destNodeId?: string;
+};
+
 export async function triggerSimulation(
   nodeId: string,
   disruptionType: string = 'port_delay',
-  severity: number = 0.8
+  severity: number = 0.8,
+  options?: TriggerSimulationOptions
 ) {
+  const body: Record<string, unknown> = {
+    node_id: nodeId,
+    disruption_type: disruptionType,
+    severity,
+  };
+  const o = options?.originNodeId?.trim();
+  const d = options?.destNodeId?.trim();
+  if (o && d) {
+    body.origin_node_id = o;
+    body.dest_node_id = d;
+  }
+
   const res = await fetch(`${API_URL}/simulate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      node_id: nodeId,
-      disruption_type: disruptionType,
-      severity,
-    }),
+    body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error('Simulation failed');
   return res.json();

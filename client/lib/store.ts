@@ -22,6 +22,11 @@ interface SupplyGuardState {
   recommendations: Recommendation[];
   recommendedEdges: Array<{ source: string; target: string }>;
   setRecommendations: (recs: Recommendation[], edges: Array<{ source: string; target: string }>) => void;
+  /** Update map highlight only (e.g. when user selects a recommendation card). */
+  setRecommendedEdges: (edges: Array<{ source: string; target: string }>) => void;
+  /** Which recommendation card is driving the map highlight (null = none). */
+  selectedRecommendationRank: number | null;
+  setSelectedRecommendationRank: (rank: number | null) => void;
   clearRecommendations: () => void;
 
   // UI state
@@ -62,6 +67,7 @@ export const useSupplyGuardStore = create<SupplyGuardState>((set) => ({
       disruptions: [],
       recommendations: [],
       recommendedEdges: [],
+      selectedRecommendationRank: null,
     })),
 
   // Disruptions
@@ -77,10 +83,23 @@ export const useSupplyGuardStore = create<SupplyGuardState>((set) => ({
   // Recommendations
   recommendations: [],
   recommendedEdges: [],
+  selectedRecommendationRank: null,
   setRecommendations: (recommendations, recommendedEdges) =>
-    set({ recommendations, recommendedEdges, isRecommendationDrawerOpen: true }),
+    set({
+      recommendations,
+      recommendedEdges,
+      isRecommendationDrawerOpen: true,
+      selectedRecommendationRank: null,
+    }),
+  setRecommendedEdges: (recommendedEdges) => set({ recommendedEdges }),
+  setSelectedRecommendationRank: (selectedRecommendationRank) => set({ selectedRecommendationRank }),
   clearRecommendations: () =>
-    set({ recommendations: [], recommendedEdges: [], isRecommendationDrawerOpen: false }),
+    set({
+      recommendations: [],
+      recommendedEdges: [],
+      isRecommendationDrawerOpen: false,
+      selectedRecommendationRank: null,
+    }),
 
   // UI state
   selectedNodeId: null,

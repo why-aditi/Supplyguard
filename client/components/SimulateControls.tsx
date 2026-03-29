@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSupplyGuardStore } from '@/lib/store';
 import { triggerSimulation, resetSimulation } from '@/lib/api';
-import { DISRUPTION_TYPE_LABELS } from '@/lib/types';
+import { DISRUPTION_TYPE_LABELS, type Recommendation } from '@/lib/types';
 
 const disruptionTypes = [
   'port_delay',
@@ -15,8 +15,10 @@ const disruptionTypes = [
 ] as const;
 
 export default function SimulateControls({ onSimulateExecuted }: { onSimulateExecuted?: () => void }) {
-  const { nodes } = useSupplyGuardStore();
+  const { nodes, setRecommendations } = useSupplyGuardStore();
   const [selectedNode, setSelectedNode] = useState('');
+  const [originNodeId, setOriginNodeId] = useState('');
+  const [destNodeId, setDestNodeId] = useState('');
   const [disruptionType, setDisruptionType] = useState('port_delay');
   const [severity, setSeverity] = useState(0.8);
   const [loading, setLoading] = useState(false);
@@ -24,12 +26,30 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
 
   const sortedNodes = [...nodes].sort((a, b) => a.name.localeCompare(b.name));
 
+  const hasOrigin = originNodeId.trim() !== '';
+  const hasDest = destNodeId.trim() !== '';
+  const odIncomplete = hasOrigin !== hasDest;
+
   async function handleSimulate() {
-    if (!selectedNode) return;
+    if (!selectedNode || odIncomplete) return;
     setLoading(true);
     try {
-      const result = await triggerSimulation(selectedNode, disruptionType, severity);
+      const result = await triggerSimulation(selectedNode, disruptionType, severity, {
+        originNodeId: hasOrigin ? originNodeId : undefined,
+        destNodeId: hasDest ? destNodeId : undefined,
+      });
       setLastResult(result);
+
+      const recBlock = result.recommendations;
+      if (recBlock && Array.isArray(recBlock.recommendations)) {
+        const parentSource = recBlock.llm_source as string | undefined;
+        const recs = recBlock.recommendations.map((r: Recommendation) => ({
+          ...r,
+          llm_source: r.llm_source ?? (parentSource as Recommendation['llm_source']),
+        }));
+        setRecommendations(recs, []);
+      }
+
       // Notify parent to close modal
       if (onSimulateExecuted) {
         onSimulateExecuted();
@@ -82,6 +102,47 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
         </div>
 
         <div className="form-group-v2">
+          <label className="font-tech text-[11px] text-muted mb-1 block tracking-[0.2em] font-semibold">
+            SHIPMENT ORIGIN (OPTIONAL)
+          </label>
+          <select
+            className="form-select form-select-v2 w-full bg-white/5 border border-white/10 rounded-lg p-4 font-mono text-xs focus:border-amber-500/50 outline-none transition-all cursor-pointer"
+            value={originNodeId}
+            onChange={(e) => setOriginNodeId(e.target.value)}
+          >
+            <option value="" className="bg-slate-900">Same as legacy (any alternate edges)...</option>
+            {sortedNodes.map((node) => (
+              <option key={node.id} value={node.id} className="bg-slate-900">
+                {node.name} ({node.type})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group-v2">
+          <label className="font-tech text-[11px] text-muted mb-1 block tracking-[0.2em] font-semibold">
+            SHIPMENT DESTINATION (OPTIONAL)
+          </label>
+          <select
+            className="form-select form-select-v2 w-full bg-white/5 border border-white/10 rounded-lg p-4 font-mono text-xs focus:border-amber-500/50 outline-none transition-all cursor-pointer"
+            value={destNodeId}
+            onChange={(e) => setDestNodeId(e.target.value)}
+          >
+            <option value="" className="bg-slate-900">Same as legacy (any alternate edges)...</option>
+            {sortedNodes.map((node) => (
+              <option key={node.id} value={node.id} className="bg-slate-900">
+                {node.name} ({node.type})
+              </option>
+            ))}
+          </select>
+          {odIncomplete && (
+            <p className="font-mono text-[10px] text-amber-500/90 mt-2">
+              Select both origin and destination, or leave both empty for legacy alternate routes.
+            </p>
+          )}
+        </div>
+
+        <div className="form-group-v2">
           <label className="font-tech text-[11px] text-muted mb-1 block tracking-[0.2em] font-semibold">DISRUPTION TYPE</label>
           <select
             className="form-select form-select-v2 w-full bg-white/5 border border-white/10 rounded-lg p-4 font-mono text-xs focus:border-amber-500/50 outline-none transition-all cursor-pointer"
@@ -117,12 +178,12 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
         <div className="form-actions-v2 mt-4">
           <button
             className={`font-tech w-full py-4 px-6 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-3 ${
-              !selectedNode || loading
+              !selectedNode || loading || odIncomplete
                 ? 'bg-white/5 text-muted cursor-not-allowed border border-white/5'
                 : 'bg-amber-600 hover:bg-amber-500 text-white shadow-lg shadow-amber-900/40 active:scale-95 border border-amber-500/30'
             }`}
             onClick={handleSimulate}
-            disabled={!selectedNode || loading}
+            disabled={!selectedNode || loading || odIncomplete}
           >
             {loading ? '⏳ PROCESSING...' : '💥 EXECUTE DISRUPTION'}
           </button>

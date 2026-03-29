@@ -45,6 +45,11 @@ export interface Disruption {
   confidence: number;
   created_at: string;
   resolved: boolean;
+  /** When set with dest_node_id, rerouting uses OD-scoped graph paths */
+  origin_node_id?: string;
+  dest_node_id?: string;
+  origin_name?: string;
+  dest_name?: string;
 }
 
 export type DisruptionType =
@@ -64,13 +69,16 @@ export interface Recommendation {
   lead_time_delta_days: number;
   risk_reduction_percent: number;
   confidence: 'high' | 'medium' | 'low';
-  llm_source?: 'gemini' | 'grok';
+  llm_source?: 'gemini' | 'groq' | 'fallback';
+  /** Graph edge endpoints for map highlight when user selects this card */
+  source_node_id?: string;
+  target_node_id?: string;
 }
 
 export interface RecommendationResponse {
   disruption_id: string;
   recommendations: Recommendation[];
-  llm_source: 'gemini' | 'grok';
+  llm_source: 'gemini' | 'groq' | 'fallback';
 }
 
 export interface PropagationResult {

@@ -701,6 +701,20 @@ a {
   box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
 }
 
+.rec-card--clickable {
+  cursor: pointer;
+}
+
+.rec-card--clickable:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+}
+
+.rec-card--active {
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.18);
+}
+
 .rec-card-header {
   display: flex;
   align-items: center;
@@ -734,9 +748,14 @@ a {
   color: #4285F4;
 }
 
-.llm-badge.grok {
-  background: rgba(255, 255, 255, 0.1);
-  color: #E5E7EB;
+.llm-badge.groq {
+  background: rgba(251, 146, 60, 0.12);
+  color: #fb923c;
+}
+
+.llm-badge.fallback {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
 }
 
 .rec-route {

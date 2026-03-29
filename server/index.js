@@ -151,10 +151,32 @@ app.get('/api/disruptions', (_req, res) => {
 
 // POST /api/simulate — trigger a disruption
 app.post('/api/simulate', async (req, res) => {
-  const { node_id, disruption_type = 'port_delay', severity = 0.8 } = req.body;
+  const {
+    node_id,
+    disruption_type = 'port_delay',
+    severity = 0.8,
+    origin_node_id,
+    dest_node_id,
+  } = req.body;
 
   if (!node_id || !graphNodes.has(node_id)) {
     return res.status(400).json({ error: 'Invalid node_id' });
+  }
+
+  const hasO = origin_node_id != null && String(origin_node_id).trim() !== '';
+  const hasD = dest_node_id != null && String(dest_node_id).trim() !== '';
+  if (hasO !== hasD) {
+    return res.status(400).json({
+      error: 'Provide both origin_node_id and dest_node_id, or omit both.',
+    });
+  }
+  if (hasO && hasD) {
+    if (origin_node_id === dest_node_id) {
+      return res.status(400).json({ error: 'origin and destination must differ' });
+    }
+    if (!graphNodes.has(origin_node_id) || !graphNodes.has(dest_node_id)) {
+      return res.status(400).json({ error: 'Invalid origin_node_id or dest_node_id' });
+    }
   }
 
   const disruptionId = `dis-${Date.now()}`;
@@ -171,6 +193,12 @@ app.post('/api/simulate', async (req, res) => {
     created_at: new Date().toISOString(),
     resolved: false,
   };
+  if (hasO && hasD) {
+    disruption.origin_node_id = origin_node_id;
+    disruption.dest_node_id = dest_node_id;
+    disruption.origin_name = graphNodes.get(origin_node_id).name;
+    disruption.dest_name = graphNodes.get(dest_node_id).name;
+  }
   activeDisruptions.set(disruptionId, disruption);
 
   try {
@@ -299,6 +327,139 @@ function buildAdjacency() {
   return adj;
 }
 
+/** Predecessors in the original directed graph (for distance-to-destination BFS). */
+function buildReverseAdjacency() {
+  const adj = new Map();
+  for (const edge of graphEdges) {
+    if (!adj.has(edge.target)) adj.set(edge.target, []);
+    adj.get(edge.target).push(edge.source);
+  }
+  return adj;
+}
+
+function bfsHopDistancesFrom(startId) {
+  const dist = new Map();
+  const queue = [startId];
+  dist.set(startId, 0);
+  const adj = buildAdjacency();
+  while (queue.length > 0) {
+    const u = queue.shift();
+    const d = dist.get(u);
+    for (const { target } of adj.get(u) || []) {
+      if (!dist.has(target)) {
+        dist.set(target, d + 1);
+        queue.push(target);
+      }
+    }
+  }
+  return dist;
+}
+
+/** Shortest hop distance from each node to destId in the directed graph. */
+function bfsHopDistancesToDest(destId) {
+  const dist = new Map();
+  const queue = [destId];
+  dist.set(destId, 0);
+  const radj = buildReverseAdjacency();
+  while (queue.length > 0) {
+    const u = queue.shift();
+    const d = dist.get(u);
+    for (const pred of radj.get(u) || []) {
+      if (!dist.has(pred)) {
+        dist.set(pred, d + 1);
+        queue.push(pred);
+      }
+    }
+  }
+  return dist;
+}
+
+function edgeToAlternateRoute(e) {
+  return {
+    source_node_id: e.source,
+    target_node_id: e.target,
+    from: graphNodes.get(e.source)?.name || e.source,
+    to: graphNodes.get(e.target)?.name || e.target,
+    mode: e.transport_mode,
+    lead_time_days: e.lead_time_days,
+  };
+}
+
+/** Attach graph edge ids to LLM rows when missing; match by exact route string or name substring. */
+function enrichRecommendationsWithEdgeIds(recommendations, alternateRoutesFull) {
+  if (!alternateRoutesFull?.length || !recommendations?.length) return recommendations;
+  return recommendations.map((rec) => {
+    if (rec.source_node_id && rec.target_node_id) return rec;
+    const routeStr = (rec.route || '').trim();
+    const exact = alternateRoutesFull.find(
+      (ar) => `${ar.from} → ${ar.to} (${ar.mode})` === routeStr
+    );
+    if (exact) {
+      return {
+        ...rec,
+        source_node_id: exact.source_node_id,
+        target_node_id: exact.target_node_id,
+      };
+    }
+    const fuzzy = alternateRoutesFull.find((ar) => {
+      const r = routeStr.toLowerCase();
+      return r.includes(String(ar.from).toLowerCase()) && r.includes(String(ar.to).toLowerCase());
+    });
+    if (fuzzy) {
+      return {
+        ...rec,
+        source_node_id: fuzzy.source_node_id,
+        target_node_id: fuzzy.target_node_id,
+      };
+    }
+    return rec;
+  });
+}
+
+function computeLegacyAlternateRoutes(propagation) {
+  const disruptedIds = new Set(Object.keys(propagation));
+  return graphEdges
+    .filter((e) => !disruptedIds.has(e.source) || !disruptedIds.has(e.target))
+    .slice(0, 10)
+    .map((e) => edgeToAlternateRoute(e));
+}
+
+/**
+ * Edges that lie on shortest path(s) from origin to dest; if too few, add one-hop detour edges (length L+1).
+ */
+function computeOdAlternateRoutes(originId, destId) {
+  const distFrom = bfsHopDistancesFrom(originId);
+  const distToDest = bfsHopDistancesToDest(destId);
+
+  if (!distFrom.has(destId)) {
+    return { routes: [], unreachable: true, shortestLen: null };
+  }
+
+  const L = distFrom.get(destId);
+  const seen = new Set();
+  const out = [];
+
+  function collectForLength(len) {
+    for (const e of graphEdges) {
+      const du = distFrom.get(e.source);
+      const dv = distToDest.get(e.target);
+      if (du === undefined || dv === undefined) continue;
+      if (du + 1 + dv !== len) continue;
+      const key = `${e.source}|${e.target}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(edgeToAlternateRoute(e));
+    }
+  }
+
+  collectForLength(L);
+  if (out.length < 5) {
+    collectForLength(L + 1);
+  }
+
+  return { routes: out.slice(0, 15), unreachable: false, shortestLen: L };
+}
+
 // ── LLM Recommendation Engine ───────────────────────
 async function getRecommendations(disruption, propagation) {
   const affectedNodes = Object.entries(propagation)
@@ -310,22 +471,32 @@ async function getRecommendations(disruption, propagation) {
     }))
     .sort((a, b) => b.risk - a.risk);
 
-  // Find alternate routes (edges not in the disrupted path)
-  const disruptedIds = new Set(Object.keys(propagation));
-  const alternateRoutes = graphEdges
-    .filter(
-      (e) =>
-        !disruptedIds.has(e.source) || !disruptedIds.has(e.target)
-    )
-    .slice(0, 10)
-    .map((e) => ({
-      from: graphNodes.get(e.source)?.name || e.source,
-      to: graphNodes.get(e.target)?.name || e.target,
-      mode: e.transport_mode,
-      lead_time_days: e.lead_time_days,
-    }));
+  let alternateRoutes;
+  let odContext = null;
 
-  const prompt = buildPrompt(disruption, affectedNodes, alternateRoutes);
+  if (disruption.origin_node_id && disruption.dest_node_id) {
+    const od = computeOdAlternateRoutes(
+      disruption.origin_node_id,
+      disruption.dest_node_id
+    );
+    alternateRoutes = od.routes;
+    odContext = {
+      originName:
+        disruption.origin_name ||
+        graphNodes.get(disruption.origin_node_id)?.name ||
+        disruption.origin_node_id,
+      destName:
+        disruption.dest_name ||
+        graphNodes.get(disruption.dest_node_id)?.name ||
+        disruption.dest_node_id,
+      unreachable: od.unreachable,
+      shortestLen: od.shortestLen,
+    };
+  } else {
+    alternateRoutes = computeLegacyAlternateRoutes(propagation);
+  }
+
+  const prompt = buildPrompt(disruption, affectedNodes, alternateRoutes, odContext);
 
   // Try Gemini first, then Grok
   let result;
@@ -349,6 +520,8 @@ async function getRecommendations(disruption, propagation) {
         recommendations: alternateRoutes.slice(0, 3).map((r, i) => ({
           rank: i + 1,
           route: `${r.from} → ${r.to} (${r.mode})`,
+          source_node_id: r.source_node_id,
+          target_node_id: r.target_node_id,
           reasoning: 'Graph-computed alternate route (LLM unavailable)',
           cost_delta_percent: Math.round(Math.random() * 30 + 5),
           lead_time_delta_days: r.lead_time_days,
@@ -364,10 +537,11 @@ async function getRecommendations(disruption, propagation) {
   // Parse and validate
   try {
     const parsed = typeof result === 'string' ? JSON.parse(result) : result;
-    const recs = (parsed.recommendations || []).map((r) => ({
+    const rawRecs = (parsed.recommendations || []).map((r) => ({
       ...r,
       llm_source: llmSource,
     }));
+    const recs = enrichRecommendationsWithEdgeIds(rawRecs, alternateRoutes);
     return {
       disruption_id: disruption.id,
       llm_source: llmSource,
@@ -383,12 +557,24 @@ async function getRecommendations(disruption, propagation) {
   }
 }
 
-function buildPrompt(disruption, affectedNodes, alternateRoutes) {
+function buildPrompt(disruption, affectedNodes, alternateRoutes, odContext) {
+  const shipmentBlock = odContext
+    ? odContext.unreachable
+      ? `SHIPMENT LEG: origin = ${odContext.originName} → destination = ${odContext.destName}
+There is no directed path in the network graph between this origin and destination. Suggest practical mitigations using the disruption and affected nodes below; you may not have graph-edge alternates for this OD pair.
+
+`
+      : `SHIPMENT LEG: origin = ${odContext.originName} → destination = ${odContext.destName} (shortest hop count = ${odContext.shortestLen})
+The listed routes are edges on shortest path(s) between origin and destination (and optionally one-hop detours), pre-computed by the graph engine.
+
+`
+    : '';
+
   return `You are a supply chain risk analyst. A disruption has been detected.
 
 DISRUPTION: ${disruption.disruption_type} at ${disruption.location || disruption.affected_node_id} — severity ${disruption.severity}/1.0
 
-AFFECTED NODES (from graph propagation):
+${shipmentBlock}AFFECTED NODES (from graph propagation):
 ${JSON.stringify(affectedNodes.slice(0, 15), null, 2)}
 
 AVAILABLE ALTERNATE ROUTES (pre-computed by graph engine):
@@ -399,7 +585,9 @@ Return ONLY valid JSON — no preamble, no markdown:
   "recommendations": [
     {
       "rank": 1,
-      "route": "Description of rerouting path",
+      "source_node_id": "graph node id from AVAILABLE ALTERNATE ROUTES list (copy exactly)",
+      "target_node_id": "graph node id from AVAILABLE ALTERNATE ROUTES list (copy exactly)",
+      "route": "Description of rerouting path (should match a listed alternate when possible)",
       "reasoning": "Why this route is recommended",
       "cost_delta_percent": 12,
       "lead_time_delta_days": 3,
@@ -409,7 +597,7 @@ Return ONLY valid JSON — no preamble, no markdown:
   ]
 }
 
-Provide exactly 3 ranked recommendations. Be specific about ports, carriers, and transport modes.`;
+Provide exactly 3 ranked recommendations. Prefer edges from AVAILABLE ALTERNATE ROUTES and copy their source_node_id and target_node_id when applicable. Be specific about ports, carriers, and transport modes.`;
 }
 
 async function callGemini(prompt) {

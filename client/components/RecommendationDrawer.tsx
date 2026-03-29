@@ -3,11 +3,27 @@
 import { useSupplyGuardStore } from '@/lib/store';
 import type { Recommendation } from '@/lib/types';
 
+function llmBadgeLabel(source: NonNullable<Recommendation['llm_source']>) {
+  switch (source) {
+    case 'gemini':
+      return '✨ GEMINI';
+    case 'groq':
+      return '⚡ GROQ';
+    case 'fallback':
+      return '📊 GRAPH FALLBACK';
+    default:
+      return String(source).toUpperCase();
+  }
+}
+
 export default function RecommendationDrawer() {
   const {
     isRecommendationDrawerOpen,
     setRecommendationDrawerOpen,
     recommendations,
+    setRecommendedEdges,
+    selectedRecommendationRank,
+    setSelectedRecommendationRank,
   } = useSupplyGuardStore();
 
   if (!isRecommendationDrawerOpen) return null;
@@ -16,7 +32,10 @@ export default function RecommendationDrawer() {
     <>
       <div
         className="recommendation-drawer-overlay"
-        onClick={() => setRecommendationDrawerOpen(false)}
+        onClick={() => {
+          setRecommendedEdges([]);
+          setRecommendationDrawerOpen(false);
+        }}
       />
       <div className="recommendation-drawer glass-panel">
         <div className="drawer-header border-b border-white/10">
@@ -28,7 +47,11 @@ export default function RecommendationDrawer() {
           </div>
           <button
             className="drawer-close glass-interactive"
-            onClick={() => setRecommendationDrawerOpen(false)}
+            onClick={() => {
+              setRecommendedEdges([]);
+              setSelectedRecommendationRank(null);
+              setRecommendationDrawerOpen(false);
+            }}
           >
             ✕
           </button>
@@ -46,7 +69,28 @@ export default function RecommendationDrawer() {
             </div>
           ) : (
             recommendations.map((rec: Recommendation) => (
-              <RecommendationCard key={rec.rank} rec={rec} />
+              <RecommendationCard
+                key={rec.rank}
+                rec={rec}
+                isActive={selectedRecommendationRank === rec.rank}
+                onToggleRoute={() => {
+                  const hasEdge =
+                    rec.source_node_id &&
+                    rec.target_node_id &&
+                    rec.source_node_id.trim() !== '' &&
+                    rec.target_node_id.trim() !== '';
+                  if (!hasEdge) return;
+                  if (selectedRecommendationRank === rec.rank) {
+                    setRecommendedEdges([]);
+                    setSelectedRecommendationRank(null);
+                  } else {
+                    setRecommendedEdges([
+                      { source: rec.source_node_id!, target: rec.target_node_id! },
+                    ]);
+                    setSelectedRecommendationRank(rec.rank);
+                  }
+                }}
+              />
             ))
           )}
         </div>
@@ -55,9 +99,39 @@ export default function RecommendationDrawer() {
   );
 }
 
-function RecommendationCard({ rec }: { rec: Recommendation }) {
+function RecommendationCard({
+  rec,
+  isActive,
+  onToggleRoute,
+}: {
+  rec: Recommendation;
+  isActive: boolean;
+  onToggleRoute: () => void;
+}) {
+  const canMap =
+    !!rec.source_node_id &&
+    !!rec.target_node_id &&
+    rec.source_node_id.trim() !== '' &&
+    rec.target_node_id.trim() !== '';
+
   return (
-    <div className="rec-card glass-panel-bright glass-interactive mb-4">
+    <div
+      {...(canMap
+        ? { role: 'button' as const, tabIndex: 0 }
+        : { role: 'article' as const })}
+      className={`rec-card glass-panel-bright glass-interactive mb-4 ${isActive ? 'rec-card--active' : ''} ${canMap ? 'rec-card--clickable' : ''}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (canMap) onToggleRoute();
+      }}
+      onKeyDown={(e) => {
+        if (!canMap) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onToggleRoute();
+        }
+      }}
+    >
       <div className="rec-card-header mb-4">
         <span className="rec-rank font-tech">Option #{rec.rank}</span>
         <div className="flex gap-2 items-center">
@@ -66,14 +140,23 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
           </span>
           {rec.llm_source && (
             <span className={`llm-badge font-tech ${rec.llm_source}`}>
-              {rec.llm_source === 'gemini' ? '✨ GEMINI' : '🤖 GROK'}
+              {llmBadgeLabel(rec.llm_source)}
             </span>
           )}
         </div>
       </div>
 
       <p className="rec-route font-tech text-lg text-white mb-2">{rec.route}</p>
-      <p className="rec-reasoning text-sm text-slate-400 leading-relaxed mb-4">{rec.reasoning}</p>
+      <p className="rec-reasoning text-sm text-slate-400 leading-relaxed mb-2">{rec.reasoning}</p>
+      {canMap ? (
+        <p className="font-mono text-[9px] text-cyan-500/80 mb-3">
+          {isActive ? 'Map: highlighted — click to clear' : 'Click to highlight on map'}
+        </p>
+      ) : (
+        <p className="font-mono text-[9px] text-slate-600 mb-3">
+          Map highlight unavailable (no graph edge id for this row)
+        </p>
+      )}
 
       <div className="rec-metrics grid grid-cols-3 gap-3">
         <div className="rec-metric glass-panel-bright p-3 rounded-lg text-center">
