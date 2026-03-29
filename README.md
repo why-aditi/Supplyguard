@@ -23,10 +23,12 @@ In an era of global volatility, supply chain visibility is no longer optional. S
 - **DistilBERT-powered classification**: Categorizes news into `port_delay`, `weather_event`, `supplier_failure`, or `geopolitical`.
 - Automated extraction of severity and affected locations.
 
-### 📊 Graph-based Risk Propagation
-- Real-time BFS (Breadth-First Search) propagation through a multi-tier supply chain graph.
-- Calculates cascading risk scores for upstream suppliers and downstream manufacturing hubs.
-- **Centrality-based layout**: Nodes with higher supply chain criticalness are visually prioritized.
+### 📊 Graph-based Risk Propagation (Neo4j)
+- High-performance Cypher-powered risk propagation engine.
+- Calculates cascading risk scores (multiplicative weights with distance decay).
+- **Live State Persistence**: Graph data is fetched dynamically from **Neo4j Aura** on startup.
+- **Centrality-based layout**: Nodes with higher supply chain criticalness (computed in Neo4j) are visually prioritized.
+
 
 ### 🛣️ AI-Driven Rerouting
 - **Gemini 2.0 / Groq Fallback**: Large Language Models analyze disruptions and recommend alternative logistical paths.
@@ -59,8 +61,10 @@ graph TD
     subgraph "Persistence & ML"
         J[(Redis)] --- B
         K[(PostgreSQL)] --- E
+        M[(Neo4j Aura)] --- E
         L[DistilBERT Model] --- D
     end
+
 ```
 
 ---
@@ -69,8 +73,10 @@ graph TD
 
 - **Frontend**: Next.js (App Router), TypeScript, D3.js (Simulation), Zustand (State), CSS-Mocks.
 - **Server**: Node.js (Express), WebSocket (ws), node-cron.
+- **Graph DB**: Neo4j Aura (Managed Cloud).
 - **ML Service**: Python (FastAPI), HuggingFace Transformers, DistilBERT, NetworkX.
 - **Storage**: Redis (Real-time state), PostgreSQL (Deep analytics).
+
 - **Orchestration**: Docker Compose.
 
 ---
@@ -84,6 +90,8 @@ graph TD
   - `AISSTREAM_API_KEY`: Get from [aisstream.io](https://aisstream.io)
   - `GEMINI_API_KEY`: Google AI Studio
   - `GROQ_API_KEY`: Groq Console (for Llama fallback)
+  - `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`: Get from [Neo4j Aura](https://neo4j.com/cloud/aura/)
+
 
 ### 2. Environment Setup
 Create a `.env` file in the root based on `.env.example`:
@@ -118,6 +126,15 @@ npm run dev
 cd client && npm install
 npm run dev
 ```
+
+### 5. Hydrating the Graph (Neo4j)
+To populate your Neo4j instance with the initial supply chain graph:
+```bash
+cd server
+node scripts/hydrateNeo4j.js
+```
+This will ingest 55 nodes and 82 routes from `data/seed/graph-seed.json`.
+
 
 ---
 

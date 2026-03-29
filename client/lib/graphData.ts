@@ -1,14 +1,23 @@
 import type { GraphNode, GraphEdge } from './types';
 
-// Seed data loaded from public directory at runtime
+import { fetchGraph } from './api';
+
+// Cached data from the server API
 let _cachedData: { nodes: GraphNode[]; edges: GraphEdge[] } | null = null;
 
 async function loadSeedData(): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
   if (_cachedData) return _cachedData;
-  const res = await fetch('/graph-seed.json');
-  _cachedData = await res.json();
-  return _cachedData!;
+  try {
+    _cachedData = await fetchGraph();
+    return _cachedData!;
+  } catch (err) {
+    console.error('Failed to fetch live graph, falling back to static seed:', err);
+    const res = await fetch('/graph-seed.json');
+    _cachedData = await res.json();
+    return _cachedData!;
+  }
 }
+
 
 // For synchronous access, we pre-load via the store init
 let _nodes: GraphNode[] = [];

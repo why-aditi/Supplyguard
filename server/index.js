@@ -8,21 +8,50 @@ import { createServer } from 'http';
 import dotenv from 'dotenv';
 import { AISStreamWorker } from './workers/aisStreamWorker.js';
 import { RSSWorker } from './workers/rssWorker.js';
+import { propagateRiskNeo4j } from './lib/neo4j-risk-service.js';
+import { fetchFullGraph } from './lib/neo4j-client.js';
+
+
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
 
-// ── Load seed graph data ────────────────────────────
-const seedData = JSON.parse(
-  readFileSync(join(__dirname, '..', 'data', 'seed', 'graph-seed.json'), 'utf-8')
-);
-
-// In-memory state
-const graphNodes = new Map(seedData.nodes.map((n) => [n.id, { ...n }]));
-const graphEdges = [...seedData.edges];
+// In-memory state (populated on startup)
+let graphNodes = new Map();
+let graphEdges = [];
 const activeDisruptions = new Map(); // id -> disruption event
+
+/**
+ * Initializes the graph from Neo4j or fallback seed file.
+ */
+async function initializeGraph() {
+  const useNeo4j = process.env.USE_NEO4J === 'true';
+  let data = null;
+
+  if (useNeo4j) {
+    console.log('🔄 Fetching live graph from Neo4j...');
+    data = await fetchFullGraph();
+  }
+
+  // Fallback if Neo4j is off or returned no nodes
+  if (!data || data.nodes.length === 0) {
+    console.log(`📡 Using fallback seed data (Neo4j ${useNeo4j ? 'is empty/down' : 'is disabled'})`);
+    data = JSON.parse(
+      readFileSync(join(__dirname, '..', 'data', 'seed', 'graph-seed.json'), 'utf-8')
+    );
+  }
+
+  // Clear and populate
+  graphNodes.clear();
+  data.nodes.forEach(n => graphNodes.set(n.id, { ...n }));
+  graphEdges = [...data.edges];
+  
+  console.log(`✅ Graph initialized: ${graphNodes.size} nodes, ${graphEdges.length} edges`);
+  return true;
+}
+
 
 // ── Shared disruption handler (used by AIS + RSS workers) ───
 function handleAutoDisruption(event, sourcePrefix) {
@@ -41,17 +70,38 @@ function handleAutoDisruption(event, sourcePrefix) {
   };
   activeDisruptions.set(disruptionId, disruption);
 
-  // BFS propagation
+  // Risk propagation
   if (graphNodes.has(event.affected_node_id)) {
-    const propagation = propagateRisk(event.affected_node_id, event.severity);
-    for (const [nid, data] of Object.entries(propagation)) {
-      const n = graphNodes.get(nid);
-      if (n) {
-        n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+    const useNeo4j = process.env.USE_NEO4J === 'true';
+    
+    // Choose propagation engine
+    const getPropagation = useNeo4j 
+      ? () => propagateRiskNeo4j(event.affected_node_id, event.severity)
+      : () => Promise.resolve(propagateRisk(event.affected_node_id, event.severity));
+
+    getPropagation().then(propagation => {
+      if (!propagation) return;
+      for (const [nid, data] of Object.entries(propagation)) {
+        const n = graphNodes.get(nid);
+        if (n) {
+          n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+        }
       }
-    }
-    broadcastRiskUpdate(propagation);
+      broadcastRiskUpdate(propagation);
+      console.log(`[RISK] Propagated to ${Object.keys(propagation).length} nodes using ${useNeo4j ? 'Neo4j' : 'Memory'}`);
+    }).catch(err => {
+      console.error('[RISK] Propagation failed — falling back to Memory... Error:', err.message);
+      // Fallback to memory on failure
+      const fallback = propagateRisk(event.affected_node_id, event.severity);
+      for (const [nid, data] of Object.entries(fallback)) {
+        const n = graphNodes.get(nid);
+        if (n) n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+      }
+      broadcastRiskUpdate(fallback);
+    });
   }
+
+
 
   broadcastDisruption(disruption);
   console.log(`[${sourcePrefix.toUpperCase()}] Disruption: ${event.disruption_type} at ${event.location} (severity: ${event.severity})`);
@@ -123,34 +173,45 @@ app.post('/api/simulate', async (req, res) => {
   };
   activeDisruptions.set(disruptionId, disruption);
 
-  // Run BFS propagation (in-memory)
-  const propagationResult = propagateRisk(node_id, severity);
-
-  // Update node risk scores
-  for (const [nid, data] of Object.entries(propagationResult)) {
-    const n = graphNodes.get(nid);
-    if (n) {
-      n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
-    }
-  }
-
-  // Broadcast via WebSocket
-  broadcastRiskUpdate(propagationResult);
-  broadcastDisruption(disruption);
-
-  // Try to get LLM recommendations (if keys configured)
-  let recommendations = null;
   try {
-    recommendations = await getRecommendations(disruption, propagationResult);
+    // Simulation logic
+    const useNeo4j = process.env.USE_NEO4J === 'true';
+    const propagationResult = useNeo4j 
+      ? await propagateRiskNeo4j(node_id, severity)
+      : propagateRisk(node_id, severity);
+
+    // Update node risk scores
+    for (const [nid, data] of Object.entries(propagationResult)) {
+      const n = graphNodes.get(nid);
+      if (n) {
+        n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+      }
+    }
+
+    // Broadcast via WebSocket
+    broadcastRiskUpdate(propagationResult);
+    broadcastDisruption(disruption);
+
+    // Try to get LLM recommendations
+    let recommendations = null;
+    try {
+      recommendations = await getRecommendations(disruption, propagationResult);
+    } catch (err) {
+      console.warn('LLM recommendations unavailable:', err.message);
+    }
+
+    res.json({
+      disruption,
+      propagation: propagationResult,
+      recommendations,
+      engine: useNeo4j ? 'neo4j' : 'memory'
+    });
   } catch (err) {
-    console.warn('LLM recommendations unavailable:', err.message);
+    console.error('[SIMULATE] Critical failure:', err.stack);
+    res.status(500).json({ error: 'Simulation failed', message: err.message });
   }
 
-  res.json({
-    disruption,
-    propagation: propagationResult,
-    recommendations,
-  });
+
 });
 
 // POST /api/recommendations — get LLM rerouting for a disruption
@@ -181,7 +242,19 @@ app.delete('/api/simulate/reset', (_req, res) => {
   res.json({ status: 'reset' });
 });
 
+// POST /api/graph/refresh — reload graph from Neo4j
+app.post('/api/graph/refresh', async (_req, res) => {
+  try {
+    await initializeGraph();
+    broadcast({ type: 'graph_reload' }); // Notify frontend to refetch graph
+    res.json({ status: 'ok', nodes: graphNodes.size, edges: graphEdges.length });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to refresh graph', message: err.message });
+  }
+});
+
 // GET /api/ais/status — AISstream connection status
+
 app.get('/api/ais/status', (_req, res) => {
   res.json(aisWorker.getStatus());
 });
@@ -260,13 +333,15 @@ async function getRecommendations(disruption, propagation) {
 
   try {
     result = await callGemini(prompt);
+    console.log('✅ Gemini recommendation successful');
   } catch (err) {
     console.warn('Gemini failed, trying Groq:', err.message);
     llmSource = 'groq';
     try {
       result = await callGroq(prompt);
+      console.log('✅ Groq fallback successful');
     } catch (groqErr) {
-      console.warn('Groq also failed:', groqErr.message);
+      console.warn('❌ Groq also failed:', groqErr.message);
       // Return graph-computed fallback
       return {
         disruption_id: disruption.id,
@@ -283,6 +358,8 @@ async function getRecommendations(disruption, propagation) {
       };
     }
   }
+
+
 
   // Parse and validate
   try {
@@ -440,18 +517,30 @@ function broadcastReset() {
 }
 
 // ── Start Server ────────────────────────────────────
-server.listen(PORT, () => {
-  console.log(`\n\u{1f6e1}\ufe0f  SupplyGuard API running on http://localhost:${PORT}`);
-  console.log(`\u{1f4e1} WebSocket on ws://localhost:${PORT}/ws`);
-  console.log(`\u{1f4ca} ${graphNodes.size} nodes, ${graphEdges.length} edges loaded`);
+async function startServer() {
+  // 1. Initialize Graph FIRST
+  await initializeGraph();
 
-  // Start AIS tracking if enabled
-  if (process.env.AISSTREAM_ENABLED !== 'false') {
-    aisWorker.start();
-  }
+  server.listen(PORT, () => {
+    console.log(`\u{1f6e1}\ufe0f  SupplyGuard API running on http://localhost:${PORT}`);
+    console.log(`\u{1f4e1} WebSocket on ws://localhost:${PORT}/ws`);
+    console.log(`\u{1f4ca} ${graphNodes.size} nodes, ${graphEdges.length} edges loaded`);
+    console.log(`\u{1f5d3}\ufe0f  Config: [Neo4j: ${process.env.USE_NEO4J === 'true' ? 'Enabled' : 'Disabled (In-Memory)'}] [AIS: ${process.env.AISSTREAM_ENABLED !== 'false' ? 'Active' : 'Off'}]`);
 
-  // Start RSS ingestion
-  rssWorker.start();
+    // Start AIS tracking if enabled
+    if (process.env.AISSTREAM_ENABLED !== 'false') {
+      aisWorker.start();
+    }
 
-  console.log('');
+    // Start RSS ingestion
+    rssWorker.start();
+
+    console.log('');
+  });
+}
+
+startServer().catch(err => {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
 });
+
