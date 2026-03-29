@@ -47,13 +47,16 @@ export const scrollableScrollbarHidden =
   'overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden';
 
 export const modalOverlay =
-  'fixed inset-0 z-[1000] flex animate-[modal-fade-in_0.3s_cubic-bezier(0.4,0,0.2,1)] items-center justify-center bg-black/82 p-3 backdrop-blur-md sm:p-5';
+  'fixed inset-0 z-[1000] flex animate-[modal-fade-in_0.3s_cubic-bezier(0.4,0,0.2,1)] items-center justify-center bg-black/5 p-3 sm:p-5';
+
+export const modalOverlayRight =
+  'fixed inset-0 z-[1000] flex animate-[modal-fade-in_0.3s_cubic-bezier(0.4,0,0.2,1)] items-start justify-end p-4 pt-24 sm:p-6 sm:pt-28';
 
 export const modalContent = [
   'relative max-h-[90vh] w-full max-w-[min(600px,100%)] rounded-2xl p-4',
   scrollableScrollbarHidden,
   'animate-[modal-slide-up_0.4s_cubic-bezier(0.16,1,0.3,1)] border border-cyan-400/40 bg-slate-900/65',
-  'shadow-[0_0_80px_rgba(0,0,0,0.6),0_0_15px_rgba(6,182,212,0.35)] backdrop-blur-[40px]',
+  'shadow-[0_0_80px_rgba(0,0,0,0.6),0_0_25px_rgba(6,182,212,0.25)] backdrop-blur-[40px]',
   'sm:px-7 sm:py-8 lg:p-10',
   glassPanel,
 ].join(' ');

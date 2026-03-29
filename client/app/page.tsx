@@ -18,6 +18,7 @@ import {
   floatingHeaderWithMetrics,
   headerActionsShrink,
   modalOverlay,
+  modalOverlayRight,
   modalContent,
   modalCloseBtn,
   btnSimulateTrigger,
@@ -74,7 +75,7 @@ export default function DashboardPage() {
       <RecommendationDrawer />
 
       {isSimulateModalOpen && (
-        <div className={modalOverlay} onClick={() => setIsSimulateModalOpen(false)} role="presentation">
+        <div className={modalOverlayRight} onClick={() => setIsSimulateModalOpen(false)} role="presentation">
           <div className={modalContent} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
             <button type="button" className={modalCloseBtn} onClick={() => setIsSimulateModalOpen(false)} aria-label="Close">
               ✕
