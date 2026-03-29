@@ -8,29 +8,63 @@ import RiskScoreCard from '@/components/RiskScoreCard';
 import DisruptionBanner from '@/components/DisruptionBanner';
 
 export default function SimulatePage() {
+  const { wsConnected } = useSupplyGuardStore();
+
   return (
-    <div className="dashboard">
-      <DisruptionBanner />
-      <header className="dashboard-header">
-        <div className="header-brand">
-          <div className="brand-logo">
-            <span className="logo-icon">🛡️</span>
-            <h1>SupplyGuard AI</h1>
+    <div className="dashboard-mission-control">
+      {/* 1. Header & Alerts Row */}
+      <div className="mc-row-top">
+        <DisruptionBanner />
+        <header className="floating-header glass-panel">
+          <div className="header-brand">
+            <div className="brand-logo">
+              <h1 className="font-tech text-amber-400">SIMULATION LAB</h1>
+            </div>
+            <span className="header-subtitle font-tech text-xs ml-4 opacity-70">
+              Stress-Test Network Resilience
+            </span>
           </div>
-          <span className="header-subtitle">Simulation Control Panel</span>
-        </div>
-      </header>
-      <RiskScoreCard />
-      <div className="dashboard-content">
-        <Sidebar />
-        <main className="dashboard-main" style={{ display: 'flex' }}>
-          <div style={{ flex: '0 0 380px', overflowY: 'auto', borderRight: '1px solid rgba(75,85,99,0.4)' }}>
+          <div className="header-status font-mono">
+            <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
+            <span className="status-text">{wsConnected ? 'LIVE' : 'OFFLINE'}</span>
+          </div>
+        </header>
+      </div>
+
+      {/* 2. Primary Command Center (Sidebar + Controls + Map) */}
+      <div className="mc-row-center">
+        <aside className="mc-sidebar-slot">
+          <Sidebar />
+        </aside>
+
+        <section className="flex-1 flex gap-5 overflow-hidden">
+          {/* Simulation Controls Panel */}
+          <div className="w-[340px] glass-panel p-6 flex flex-col shrink-0">
             <SimulateControls />
           </div>
-          <div style={{ flex: 1 }}>
-            <SupplyMap />
-          </div>
-        </main>
+
+          {/* Map Viewport */}
+          <main className="flex-1 mc-map-viewport glass-panel relative">
+            <div className="map-inner-container">
+              <SupplyMap />
+            </div>
+            <div className="map-overlay-vignette" />
+            
+            {/* Map HUD Overlay */}
+            <div className="absolute top-4 right-4 pointer-events-none">
+              <div className="glass-panel-bright px-3 py-2 rounded font-tech text-[10px] tracking-widest text-amber-500 border border-amber-500/30">
+                PROVISIONAL TOPOLOGY
+              </div>
+            </div>
+          </main>
+        </section>
+      </div>
+
+      {/* 3. Metrics Row */}
+      <div className="mc-row-bottom">
+        <section className="floating-metrics">
+          <RiskScoreCard />
+        </section>
       </div>
     </div>
   );

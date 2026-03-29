@@ -1,14 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import { useSupplyGuardStore } from '@/lib/store';
 import SupplyMap from '@/components/SupplyMap';
 import RiskScoreCard from '@/components/RiskScoreCard';
 import DisruptionBanner from '@/components/DisruptionBanner';
 import RecommendationDrawer from '@/components/RecommendationDrawer';
 import Sidebar from '@/components/Sidebar';
+import SimulateControls from '@/components/SimulateControls';
 
 export default function DashboardPage() {
   const { nodes, wsConnected } = useSupplyGuardStore();
+  const [isSimulateModalOpen, setIsSimulateModalOpen] = useState(false);
 
   return (
     <div className="dashboard-mission-control">
@@ -21,10 +24,21 @@ export default function DashboardPage() {
               <h1 className="font-tech text-cyan-400">SUPPLYGUARD AI</h1>
             </div>
           </div>
-          <div className="header-status font-mono">
-            <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
-            <span className="status-text">{wsConnected ? 'LIVE' : 'OFFLINE'}</span>
-            <span className="header-node-count">{nodes.length} NODES</span>
+
+          <div className="flex items-center gap-6">
+            {/* Simulate Trigger Button */}
+            <button
+              className="btn-simulate-trigger"
+              onClick={() => setIsSimulateModalOpen(true)}
+            >
+              <span className="mr-1">🎮</span> SIMULATE
+            </button>
+
+            <div className="header-status font-mono">
+              <div className={`status-dot ${wsConnected ? 'connected' : 'disconnected'}`} />
+              <span className="status-text">{wsConnected ? 'LIVE ' : 'OFFLINE '}</span>
+              <span className="header-node-count">{nodes.length} NODES</span>
+            </div>
           </div>
         </header>
       </div>
@@ -52,6 +66,21 @@ export default function DashboardPage() {
 
       {/* 4. Overlays */}
       <RecommendationDrawer />
+
+      {/* 5. Simulation Modal */}
+      {isSimulateModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsSimulateModalOpen(false)}>
+          <div className="modal-content glass-panel" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="modal-close-btn"
+              onClick={() => setIsSimulateModalOpen(false)}
+            >
+              ✕
+            </button>
+            <SimulateControls onSimulateExecuted={() => setIsSimulateModalOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

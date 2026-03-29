@@ -7,8 +7,6 @@ import { useSupplyGuardStore } from '@/lib/store';
 const navItems = [
   { href: '/', label: 'Dashboard', icon: '📊' },
   { href: '/disruptions', label: 'Disruptions', icon: '⚠️' },
-  { href: '/simulate', label: 'Simulate', icon: '🎮' },
-  { href: '/settings', label: 'Settings', icon: '⚙️' },
 ];
 
 export default function Sidebar() {

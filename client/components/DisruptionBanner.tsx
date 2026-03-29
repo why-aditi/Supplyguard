@@ -43,21 +43,11 @@ export default function DisruptionBanner() {
             {source.icon} {source.label.toUpperCase()}
           </span>
           <span className="disruption-banner-time font-mono text-[10px] opacity-60">
-            [{new Date(latest.created_at).toLocaleTimeString()}]
+            [{new Date(latest.created_at).toLocaleTimeString()}] {typeLabel.toUpperCase()} DETECTED AT{' '}
+            {latest.location?.toUpperCase() || latest.affected_node_id.toUpperCase()} {' '} {(latest.severity * 100).toFixed(0)}% CRITICALITY
           </span>
         </div>
-        <span className="disruption-banner-text font-tech">
-          <strong className="text-rose-500">{typeLabel.toUpperCase()}</strong> DETECTED AT{' '}
-          <strong className="text-rose-400">{latest.location?.toUpperCase() || latest.affected_node_id.toUpperCase()}</strong>
-        </span>
-      </div>
-      <div className="flex flex-col items-end gap-1">
-        <span className="font-mono text-xl font-bold text-rose-500">
-          {(latest.severity * 100).toFixed(0)}%
-        </span>
-        <span className="font-tech text-[9px] opacity-50">CRITICALITY</span>
       </div>
     </div>
   );
 }
-
