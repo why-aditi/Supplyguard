@@ -9,9 +9,6 @@ import os
 from pathlib import Path
 from typing import Optional
 
-import torch
-from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
-
 
 class DistilBertClassifier:
     """
@@ -20,8 +17,12 @@ class DistilBertClassifier:
     """
 
     def __init__(self, model_path: str, confidence_threshold: float = 0.55):
+        import torch
+        from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
+
         self.confidence_threshold = confidence_threshold
         self.model_path = Path(model_path)
+        self._torch = torch
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         # Load label config
@@ -55,6 +56,7 @@ class DistilBertClassifier:
             return_tensors="pt",
         ).to(self.device)
 
+        torch = self._torch
         with torch.no_grad():
             outputs = self.model(**inputs)
             logits = outputs.logits
