@@ -1,0 +1,29 @@
+{
+  "labels": [
+    "port_delay",
+    "weather_event",
+    "supplier_failure",
+    "geopolitical",
+    "transport_strike",
+    "customs_delay",
+    "none"
+  ],
+  "label2id": {
+    "port_delay": 0,
+    "weather_event": 1,
+    "supplier_failure": 2,
+    "geopolitical": 3,
+    "transport_strike": 4,
+    "customs_delay": 5,
+    "none": 6
+  },
+  "id2label": {
+    "0": "port_delay",
+    "1": "weather_event",
+    "2": "supplier_failure",
+    "3": "geopolitical",
+    "4": "transport_strike",
+    "5": "customs_delay",
+    "6": "none"
+  }
+}
