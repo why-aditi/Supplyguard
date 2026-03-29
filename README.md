@@ -121,10 +121,32 @@ npm run dev
 
 ---
 
-## 📦 Git LFS & ML Models
-This repository uses **Git LFS (Large File Storage)** to handle the 255MB DistilBERT model weights (`model.safetensors`).
-- If you clone the repo, run `git lfs pull` to ensure models are downloaded.
-- The model is stored in `ml/models/distilbert-disruption-v1/`.
+## 📦 Handling Large Files (Git LFS)
+
+This project uses **Git LFS (Large File Storage)** to manage the ML model weights. GitHub has a strict 100MB limit for standard files, while our DistilBERT model (`model.safetensors`) is **255MB**.
+
+### Initial Setup
+If you are cloning this repository for the first time, you must have Git LFS installed on your system:
+
+1. **Install Git LFS**: Download and install from [git-lfs.com](https://git-lfs.com/).
+2. **Initialize**:
+   ```bash
+   git lfs install
+   ```
+3. **Pull Models**: Ensure the actual model binaries are downloaded (not just the pointers):
+   ```bash
+   git lfs pull
+   ```
+
+### Tracked Files
+Currently, the following extensions are tracked via LFS:
+- `*.safetensors` (ML Weights)
+- `*.bin` (Legacy Model Binaries)
+
+### Maintenance
+If you update the model weights, simply add and commit as usual. Git LFS handles the upload to the LFS store automatically.
+- **Model Path**: `ml/models/distilbert-disruption-v1/`
+
 
 ---
 
