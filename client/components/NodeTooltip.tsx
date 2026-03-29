@@ -16,32 +16,34 @@ export default function NodeTooltip({ node, risk, x, y }: NodeTooltipProps) {
 
   return (
     <div
-      className="node-tooltip"
+      className="node-tooltip font-mono"
       style={{
-        left: x + 16,
-        top: y - 10,
+        left: x + 20,
+        top: y - 20,
       }}
     >
       <div className="tooltip-header">
-        <span className="tooltip-icon">{config.icon}</span>
-        <span className="tooltip-name">{node.name}</span>
-      </div>
-      <div className="tooltip-grid">
-        <span className="tooltip-label">Type</span>
-        <span className="tooltip-value" style={{ color: config.color }}>
-          {config.label}
-        </span>
-        <span className="tooltip-label">Country</span>
-        <span className="tooltip-value">{node.location.country}</span>
-        <span className="tooltip-label">Tier</span>
-        <span className="tooltip-value">T{node.tier}</span>
-        <span className="tooltip-label">Risk</span>
-        <span className="tooltip-value" style={{ color: riskToColor(risk) }}>
+        <span className="tooltip-name font-tech">{node.name}</span>
+        <span 
+          className="tooltip-risk-badge" 
+          style={{ color: riskToColor(risk), border: `1px solid ${riskToColor(risk)}33` }}
+        >
           {(risk * 100).toFixed(0)}%
         </span>
-        <span className="tooltip-label">Centrality</span>
+      </div>
+      <div className="tooltip-grid">
+        <span className="tooltip-label">NODE TYPE</span>
+        <span className="tooltip-value" style={{ color: config.color }}>
+          {config.label.toUpperCase()}
+        </span>
+        <span className="tooltip-label">ORIGIN</span>
+        <span className="tooltip-value">{node.location.country.toUpperCase()}</span>
+        <span className="tooltip-label">TIER</span>
+        <span className="tooltip-value">0{node.tier}</span>
+        <span className="tooltip-label">CENTRALITY</span>
         <span className="tooltip-value">{(node.centrality * 100).toFixed(0)}%</span>
       </div>
     </div>
   );
 }
+

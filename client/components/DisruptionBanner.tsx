@@ -34,21 +34,30 @@ export default function DisruptionBanner() {
   const source = SOURCE_CONFIG[(latest as any).source] || SOURCE_CONFIG.simulated;
 
   return (
-    <div className="disruption-banner">
+    <div className="disruption-banner glass-panel">
       <div className="disruption-banner-pulse" />
-      <span className="disruption-banner-icon">🚨</span>
-      <span className={`disruption-source-badge ${source.className}`}>
-        {source.icon} {source.label}
-      </span>
-      <span className="disruption-banner-text">
-        <strong>{typeLabel}</strong> detected at{' '}
-        <strong>{latest.location || latest.affected_node_id}</strong> — Severity:{' '}
-        {(latest.severity * 100).toFixed(0)}%
-      </span>
-      <span className="disruption-banner-time">
-        {new Date(latest.created_at).toLocaleTimeString()}
-      </span>
-      <div className="banner-progress-bar" />
+      <span className="disruption-banner-icon pulsing-logo">🚨</span>
+      <div className="flex flex-col flex-1">
+        <div className="flex items-center gap-2 mb-1">
+          <span className={`disruption-source-badge font-tech ${source.className}`}>
+            {source.icon} {source.label.toUpperCase()}
+          </span>
+          <span className="disruption-banner-time font-mono text-[10px] opacity-60">
+            [{new Date(latest.created_at).toLocaleTimeString()}]
+          </span>
+        </div>
+        <span className="disruption-banner-text font-tech">
+          <strong className="text-rose-500">{typeLabel.toUpperCase()}</strong> DETECTED AT{' '}
+          <strong className="text-rose-400">{latest.location?.toUpperCase() || latest.affected_node_id.toUpperCase()}</strong>
+        </span>
+      </div>
+      <div className="flex flex-col items-end gap-1">
+        <span className="font-mono text-xl font-bold text-rose-500">
+          {(latest.severity * 100).toFixed(0)}%
+        </span>
+        <span className="font-tech text-[9px] opacity-50">CRITICALITY</span>
+      </div>
     </div>
   );
 }
+

@@ -50,15 +50,26 @@ export default function SupplyMap() {
     // Defs for gradients and filters
     const defs = svg.append('defs');
 
-    // Glow filter for disrupted nodes
-    const glowFilter = defs.append('filter').attr('id', 'glow');
-    glowFilter
-      .append('feGaussianBlur')
-      .attr('stdDeviation', '4')
-      .attr('result', 'coloredBlur');
+    // 1. Neon Glow Filter (Cyan)
+    const glowFilter = defs.append('filter').attr('id', 'neon-glow')
+      .attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+    glowFilter.append('feGaussianBlur').attr('stdDeviation', '3.5').attr('result', 'blur');
+    glowFilter.append('feFlood').attr('flood-color', '#06B6D4').attr('flood-opacity', '0.5').attr('result', 'color');
+    glowFilter.append('feComposite').attr('in', 'color').attr('in2', 'blur').attr('operator', 'in').attr('result', 'glow');
     const feMerge = glowFilter.append('feMerge');
-    feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+    feMerge.append('feMergeNode').attr('in', 'glow');
     feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    // 2. Critical Pulse Filter (Rose)
+    const pulseFilter = defs.append('filter').attr('id', 'critical-glow')
+      .attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+    pulseFilter.append('feGaussianBlur').attr('stdDeviation', '5').attr('result', 'blur');
+    pulseFilter.append('feFlood').attr('flood-color', '#F43F5E').attr('flood-opacity', '0.7').attr('result', 'color');
+    pulseFilter.append('feComposite').attr('in', 'color').attr('in2', 'blur').attr('operator', 'in').attr('result', 'glow');
+    const feMergePulse = pulseFilter.append('feMerge');
+    feMergePulse.append('feMergeNode').attr('in', 'glow');
+    feMergePulse.append('feMergeNode').attr('in', 'SourceGraphic');
+
 
     // Arrow marker for directed edges
     defs
@@ -125,28 +136,43 @@ export default function SupplyMap() {
           })
       );
 
-    // Node circles
+    // Node Base (Radar Ring)
     nodeElements
       .append('circle')
+      .attr('class', 'node-radar')
+      .attr('r', (d) => centralityToRadius(d.centrality) + 4)
+      .attr('fill', 'none')
+      .attr('stroke', (d) => NODE_TYPE_CONFIG[d.type]?.color ?? 'var(--accent-cyan)')
+      .attr('stroke-width', 1)
+      .attr('stroke-opacity', 0.2)
+      .attr('stroke-dasharray', '2 2');
+
+    // Main Node Circle
+    nodeElements
+      .append('circle')
+      .attr('class', 'node-main')
       .attr('r', (d) => centralityToRadius(d.centrality))
       .attr('fill', (d) => riskToColor(d.current_risk))
-      .attr('stroke', (d) => NODE_TYPE_CONFIG[d.type]?.color ?? '#6B7280')
-      .attr('stroke-width', 2)
-      .attr('opacity', 0.9);
+      .attr('stroke', (d) => NODE_TYPE_CONFIG[d.type]?.color ?? 'var(--accent-cyan)')
+      .attr('stroke-width', 1.5)
+      .attr('fill-opacity', 0.85);
 
-    // Node labels (small text)
+
+    // Node labels (Tech Font)
     nodeElements
       .append('text')
+      .attr('class', 'font-mono')
       .text((d) => {
         const name = d.name;
         return name.length > 18 ? name.slice(0, 16) + '…' : name;
       })
-      .attr('dy', (d) => centralityToRadius(d.centrality) + 14)
+      .attr('dy', (d) => centralityToRadius(d.centrality) + 16)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#D1D5DB')
-      .attr('font-size', '10px')
-      .attr('font-family', 'Inter, system-ui, sans-serif')
-      .attr('pointer-events', 'none');
+      .attr('fill', 'var(--text-secondary)')
+      .attr('font-size', '9px')
+      .attr('pointer-events', 'none')
+      .attr('text-transform', 'uppercase');
+
 
     // Node type icon
     nodeElements
@@ -170,7 +196,7 @@ export default function SupplyMap() {
         setSelectedNodeId(d.id === selectedNodeId ? null : d.id);
       });
 
-    // Force simulation
+    // Force simulation (Optimized for boxed viewing)
     const simulation = d3
       .forceSimulation<GraphNode>(simNodes)
       .force(
@@ -178,15 +204,16 @@ export default function SupplyMap() {
         d3
           .forceLink<GraphNode, GraphEdge>(simEdges)
           .id((d) => d.id)
-          .distance(120)
-          .strength((d) => (typeof d.weight === 'number' ? d.weight * 0.3 : 0.1))
+          .distance(90) // More compact for boxed view
+          .strength((d) => (typeof d.weight === 'number' ? d.weight * 0.4 : 0.2))
       )
-      .force('charge', d3.forceManyBody().strength(-300).distanceMax(500))
+      .force('charge', d3.forceManyBody().strength(-200).distanceMax(400))
       .force('center', d3.forceCenter(width / 2, height / 2))
-      .force('collision', d3.forceCollide().radius((d) => centralityToRadius((d as GraphNode).centrality) + 5))
-      .force('x', d3.forceX(width / 2).strength(0.05))
-      .force('y', d3.forceY(height / 2).strength(0.05))
-      .alphaDecay(0.02)
+      .force('collision', d3.forceCollide().radius((d) => centralityToRadius((d as GraphNode).centrality) + 8))
+      .force('x', d3.forceX(width / 2).strength(0.1)) // Stronger centering
+      .force('y', d3.forceY(height / 2).strength(0.1))
+      .alphaDecay(0.04)
+
       .on('tick', () => {
         edgeElements
           .attr('x1', (d) => (d.source as GraphNode).x ?? 0)
@@ -219,12 +246,20 @@ export default function SupplyMap() {
 
         // Animate circle color
         group
-          .select('circle')
+          .select('.node-main')
           .transition()
           .duration(800)
           .ease(d3.easeCubicInOut)
           .attr('fill', riskToColor(risk))
-          .attr('filter', risk > 0.6 ? 'url(#glow)' : 'none');
+          .attr('filter', risk > 0.6 ? 'url(#critical-glow)' : 'none');
+        
+        group
+          .select('.node-radar')
+          .transition()
+          .duration(800)
+          .attr('stroke-opacity', risk > 0.3 ? 0.6 : 0.2)
+          .attr('r', (d: any) => centralityToRadius(d.centrality) + (risk > 0.5 ? 8 : 4));
+
 
         // Add throb class for high-risk nodes
         if (risk > 0.6) {

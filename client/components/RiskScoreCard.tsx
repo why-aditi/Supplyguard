@@ -47,18 +47,19 @@ export default function RiskScoreCard() {
   ];
 
   return (
-    <div className="risk-score-cards">
+    <div className="risk-score-cards w-full">
       {cards.map((card) => (
-        <div key={card.label} className="risk-card">
+        <div key={card.label} className="risk-card glass-panel glass-interactive">
           <div className="risk-card-icon">{card.icon}</div>
           <div className="risk-card-content">
-            <span className="risk-card-value" style={{ color: card.color }}>
+            <span className="risk-card-value font-mono" style={{ color: card.color }}>
               {card.value}
             </span>
-            <span className="risk-card-label">{card.label}</span>
+            <span className="risk-card-label font-tech">{card.label}</span>
           </div>
         </div>
       ))}
     </div>
   );
 }
+
