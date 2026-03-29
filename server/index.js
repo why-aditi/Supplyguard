@@ -7,6 +7,7 @@ import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import dotenv from 'dotenv';
 import { AISStreamWorker } from './workers/aisStreamWorker.js';
+import { RSSWorker } from './workers/rssWorker.js';
 
 dotenv.config({ path: join(dirname(fileURLToPath(import.meta.url)), '..', '.env') });
 
@@ -23,46 +24,53 @@ const graphNodes = new Map(seedData.nodes.map((n) => [n.id, { ...n }]));
 const graphEdges = [...seedData.edges];
 const activeDisruptions = new Map(); // id -> disruption event
 
+// ── Shared disruption handler (used by AIS + RSS workers) ───
+function handleAutoDisruption(event, sourcePrefix) {
+  const disruptionId = `${sourcePrefix}-${Date.now()}`;
+  const disruption = {
+    id: disruptionId,
+    disruption_type: event.disruption_type,
+    severity: event.severity,
+    location: event.location,
+    affected_node_id: event.affected_node_id,
+    confidence: event.confidence,
+    created_at: new Date().toISOString(),
+    resolved: false,
+    source: event.source || sourcePrefix,
+    details: event.details,
+  };
+  activeDisruptions.set(disruptionId, disruption);
+
+  // BFS propagation
+  if (graphNodes.has(event.affected_node_id)) {
+    const propagation = propagateRisk(event.affected_node_id, event.severity);
+    for (const [nid, data] of Object.entries(propagation)) {
+      const n = graphNodes.get(nid);
+      if (n) {
+        n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
+      }
+    }
+    broadcastRiskUpdate(propagation);
+  }
+
+  broadcastDisruption(disruption);
+  console.log(`[${sourcePrefix.toUpperCase()}] Disruption: ${event.disruption_type} at ${event.location} (severity: ${event.severity})`);
+}
+
 // ── AISstream Worker ────────────────────────────────
 const aisWorker = new AISStreamWorker({
   apiKey: process.env.AISSTREAM_API_KEY,
-  onDisruption: (event) => {
-    // AIS-detected congestion → create disruption + propagate
-    const disruptionId = `ais-${Date.now()}`;
-    const disruption = {
-      id: disruptionId,
-      disruption_type: event.disruption_type,
-      severity: event.severity,
-      location: event.location,
-      affected_node_id: event.affected_node_id,
-      confidence: event.confidence,
-      created_at: new Date().toISOString(),
-      resolved: false,
-      source: 'aisstream',
-      details: event.details,
-    };
-    activeDisruptions.set(disruptionId, disruption);
-
-    // BFS propagation
-    if (graphNodes.has(event.affected_node_id)) {
-      const propagation = propagateRisk(event.affected_node_id, event.severity);
-      for (const [nid, data] of Object.entries(propagation)) {
-        const n = graphNodes.get(nid);
-        if (n) {
-          n.current_risk = Math.min(1.0, Math.max(n.current_risk, data.risk));
-        }
-      }
-      broadcastRiskUpdate(propagation);
-    }
-
-    broadcastDisruption(disruption);
-    console.log(`🚨 AIS disruption: ${event.disruption_type} at ${event.location} (severity: ${event.severity})`);
-  },
+  onDisruption: (event) => handleAutoDisruption(event, 'ais'),
   onVesselUpdate: (update) => {
-    // Optionally broadcast individual vessel positions to frontend
     broadcast({ type: 'vessel_update', ...update });
   },
 });
+
+// ── RSS Ingestion Worker ────────────────────────────
+const rssWorker = new RSSWorker({
+  onDisruption: (event) => handleAutoDisruption(event, 'rss'),
+});
+
 
 // ── Express App ─────────────────────────────────────
 const app = express();
@@ -176,6 +184,11 @@ app.delete('/api/simulate/reset', (_req, res) => {
 // GET /api/ais/status — AISstream connection status
 app.get('/api/ais/status', (_req, res) => {
   res.json(aisWorker.getStatus());
+});
+
+// GET /api/rss/status — RSS ingestion status
+app.get('/api/rss/status', (_req, res) => {
+  res.json(rssWorker.getStatus());
 });
 
 // ── BFS Risk Propagation ────────────────────────────
@@ -428,13 +441,17 @@ function broadcastReset() {
 
 // ── Start Server ────────────────────────────────────
 server.listen(PORT, () => {
-  console.log(`\n🛡️  SupplyGuard API running on http://localhost:${PORT}`);
-  console.log(`📡 WebSocket on ws://localhost:${PORT}/ws`);
-  console.log(`📊 ${graphNodes.size} nodes, ${graphEdges.length} edges loaded`);
+  console.log(`\n\u{1f6e1}\ufe0f  SupplyGuard API running on http://localhost:${PORT}`);
+  console.log(`\u{1f4e1} WebSocket on ws://localhost:${PORT}/ws`);
+  console.log(`\u{1f4ca} ${graphNodes.size} nodes, ${graphEdges.length} edges loaded`);
 
   // Start AIS tracking if enabled
   if (process.env.AISSTREAM_ENABLED !== 'false') {
     aisWorker.start();
   }
+
+  // Start RSS ingestion
+  rssWorker.start();
+
   console.log('');
 });

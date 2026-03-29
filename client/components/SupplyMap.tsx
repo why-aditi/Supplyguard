@@ -205,19 +205,49 @@ export default function SupplyMap() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes, edges]);
 
-  // Update node colors when risk scores change
+  // Update node colors + ripple animation when risk scores change
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
 
     svg
       .selectAll<SVGGElement, GraphNode>('.nodes g')
-      .select('circle')
-      .transition()
-      .duration(800)
-      .ease(d3.easeCubicInOut)
-      .attr('fill', (d) => riskToColor(getNodeRisk(d.id)))
-      .attr('filter', (d) => (getNodeRisk(d.id) > 0.6 ? 'url(#glow)' : 'none'));
+      .each(function (d) {
+        const group = d3.select(this);
+        const risk = getNodeRisk(d.id);
+        const prevRisk = d.current_risk || 0;
+
+        // Animate circle color
+        group
+          .select('circle')
+          .transition()
+          .duration(800)
+          .ease(d3.easeCubicInOut)
+          .attr('fill', riskToColor(risk))
+          .attr('filter', risk > 0.6 ? 'url(#glow)' : 'none');
+
+        // Add throb class for high-risk nodes
+        if (risk > 0.6) {
+          group.classed('node-disrupted', true);
+        } else {
+          group.classed('node-disrupted', false);
+        }
+
+        // Spawn ripple ring when risk increases significantly
+        if (risk > prevRisk + 0.1 && risk > 0.3) {
+          const ripple = group
+            .append('circle')
+            .attr('class', 'ripple-ring')
+            .attr('cx', 0)
+            .attr('cy', 0)
+            .attr('r', 12);
+
+          // Remove after animation completes
+          setTimeout(() => ripple.remove(), 1200);
+        }
+
+        d.current_risk = risk;
+      });
   }, [riskScores, getNodeRisk]);
 
   // Update edge colors for disrupted / recommended edges
@@ -231,30 +261,29 @@ export default function SupplyMap() {
 
     svg
       .selectAll<SVGLineElement, GraphEdge>('.edges line')
-      .transition()
-      .duration(800)
-      .ease(d3.easeCubicInOut)
-      .attr('stroke', (d) => {
+      .each(function (d) {
+        const line = d3.select(this);
         const sId = typeof d.source === 'string' ? d.source : d.source.id;
         const tId = typeof d.target === 'string' ? d.target : d.target.id;
         const key = `${sId}->${tId}`;
+        const isRecommended = recommendedSet.has(key);
 
-        if (recommendedSet.has(key)) return '#10B981'; // green recommended
-        const sourceRisk = getNodeRisk(sId);
-        const targetRisk = getNodeRisk(tId);
-        if (sourceRisk > 0.5 || targetRisk > 0.5) return '#EF4444'; // red disrupted
-        return '#374151'; // default gray
-      })
-      .attr('stroke-opacity', (d) => {
-        const sId = typeof d.source === 'string' ? d.source : d.source.id;
-        const tId = typeof d.target === 'string' ? d.target : d.target.id;
-        const key = `${sId}->${tId}`;
+        // Toggle route-recommended class for green trace animation
+        line.classed('route-recommended', isRecommended);
 
-        if (recommendedSet.has(key)) return 0.9;
-        const sourceRisk = getNodeRisk(sId);
-        const targetRisk = getNodeRisk(tId);
-        if (sourceRisk > 0.3 || targetRisk > 0.3) return 0.7;
-        return 0.4;
+        if (!isRecommended) {
+          const sourceRisk = getNodeRisk(sId);
+          const targetRisk = getNodeRisk(tId);
+          const isDisrupted = sourceRisk > 0.5 || targetRisk > 0.5;
+
+          line
+            .transition()
+            .duration(800)
+            .ease(d3.easeCubicInOut)
+            .attr('stroke', isDisrupted ? '#EF4444' : '#374151')
+            .attr('stroke-opacity', sourceRisk > 0.3 || targetRisk > 0.3 ? 0.7 : 0.4)
+            .attr('stroke-width', isDisrupted ? 2.5 : volumeToWidth(d.annual_volume_usd));
+        }
       });
   }, [riskScores, recommendedEdges, getNodeRisk]);
 

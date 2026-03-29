@@ -112,11 +112,18 @@ def load_classifier(model_dir: str, confidence_threshold: float = 0.55):
         # Try the directory itself (no /final subdirectory)
         model_path = Path(model_dir)
     
-    if (model_path / "label_config.json").exists():
-        print(f"✅ Loading fine-tuned DistilBERT from {model_path}")
+    has_config = (model_path / "label_config.json").exists()
+    has_weights = (model_path / "model.safetensors").exists() or (model_path / "pytorch_model.bin").exists()
+
+    if has_config and has_weights:
+        print(f"[OK] Loading fine-tuned DistilBERT from {model_path}")
         return DistilBertClassifier(str(model_path), confidence_threshold)
     else:
-        print(f"⚠️  No fine-tuned model found at {model_dir}")
+        if has_config and not has_weights:
+            print(f"[WARN] label_config.json found but no model weights at {model_path}")
+            print("   Run the training script first to generate model weights.")
+        else:
+            print(f"[WARN] No fine-tuned model found at {model_dir}")
         print("   Using keyword fallback classifier instead.")
         print(f"   To train: python ml/classifier/train.py --data_path data/training/disruptions.csv")
         from .keyword_classifier import KeywordClassifier
