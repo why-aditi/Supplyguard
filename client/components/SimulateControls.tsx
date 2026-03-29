@@ -182,12 +182,6 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
               ))}
             </select>
           </div>
-
-          {odIncomplete && (
-            <p className="col-span-2 font-mono text-[10px] leading-snug text-amber-500/90">
-              Select both origin and destination, or leave both empty for legacy alternate routes.
-            </p>
-          )}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -211,11 +205,10 @@ export default function SimulateControls({ onSimulateExecuted }: { onSimulateExe
         <div className="mt-2 flex flex-col gap-3 pt-2 sm:mt-4 sm:flex-row sm:items-stretch sm:gap-3 sm:pt-0">
           <button
             type="button"
-            className={`${BTN_PRIMARY} ${
-              !selectedNode || loading || odIncomplete
+            className={`${BTN_PRIMARY} ${!selectedNode || loading || odIncomplete
                 ? 'cursor-not-allowed border border-white/5 bg-white/5 text-muted'
                 : 'border border-amber-500/30 bg-amber-600 text-white shadow-lg shadow-amber-900/40 hover:bg-amber-500 active:scale-95'
-            }`}
+              }`}
             onClick={handleSimulate}
             disabled={!selectedNode || loading || odIncomplete}
           >
